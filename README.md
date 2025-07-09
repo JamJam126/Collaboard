@@ -40,6 +40,11 @@ npm install
 ```
 
 ## 🔧 Running the Project
+### Seed database
+create database by using mysql name **collaboard**
+```bash
+npm run seed
+```
 ### Start Backend
 ```bash
 cd server

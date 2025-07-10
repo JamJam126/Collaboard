@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
 import { sequelize } from './models/index.js';
+import boardRouter from './routes/board.route.js';
 
 // require("dotenv").config();
 
@@ -15,6 +16,7 @@ sequelize.sync()
 app.get("/api/health", (req, res) => {
     res.json({ message: "API is working!" });
 });
+app.use("/board",boardRouter);
 
 const PORT = process.env.PORT ;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

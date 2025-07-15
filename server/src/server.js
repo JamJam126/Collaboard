@@ -1,6 +1,5 @@
-// import express from "express";
-const express = require('express')
-const cors = require('cors')
+import express from "express";
+import cors from "cors";
 
 // require("dotenv").config();
 

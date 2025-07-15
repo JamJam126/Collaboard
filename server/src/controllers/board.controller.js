@@ -2,7 +2,8 @@ import { Board } from "../models/index.js"
 
 
 const getBoard = async (req, res) => {
-    const result = await Board.findAll();
+    const {id}=req.user
+    const result = await Board.findAll({where:{user_id:id}});
     res.json(result);
 
 }

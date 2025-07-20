@@ -1,7 +1,6 @@
 import AuthenticatedLayout from "../layout/AuthenticatedLayout"
 
 const BoardsPage = () => {
-
     return(
         <AuthenticatedLayout>
             BoardPages

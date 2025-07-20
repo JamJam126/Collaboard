@@ -28,7 +28,7 @@ export const registerUser=async(req,res)=>{
             hashedPassword
         })
         
-        const token=jwt.sign({id:newUser.id},process.env.JWT_SECRET)
+        const token=jwt.sign({id:newUser.id,email,name},process.env.JWT_SECRET,{expiresIn:'7d'})
         return res.status(201).json({token})
 
     } catch (error) {
@@ -39,19 +39,19 @@ export const registerUser=async(req,res)=>{
 
 export const loginUser=async(req,res)=>{
     try {
-        const {name,password}=req.body
-        if(!name||!password){
+        const {email,password}=req.body
+        if(!email||!password){
             return res.status(400).json({message:"something missing"})
         }
-        const exist=await User.findOne({where:{name}})
+        const exist=await User.findOne({where:{email}})
         if(!exist){
-            return res.status(404).json({message:"name not found"})
+            return res.status(404).json({message:"email not found"})
         }
         const isMatch=await bcrypt.compare(password,exist.hashedPassword)
         if(!isMatch){
             return res.status(400).json({message:"wrong password"})
         }
-        const token=jwt.sign({id:exist.id},process.env.JWT_SECRET)
+        const token=jwt.sign({id:exist.id,email,name:exist.name},process.env.JWT_SECRET,{expiresIn:'7d'})
         res.status(202).json({token})
     } catch (error) {
         console.log(error)

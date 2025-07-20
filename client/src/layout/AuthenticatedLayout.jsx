@@ -8,8 +8,8 @@ const AuthenticatedLayout = ({ children }) => {
             <Nav />
             <div className="flex">
                 <SideBar />
-                <div className="content flex-1"> 
-                    <div className="bg-[#2D3142] h-[695px]">
+                <div className="content flex-1 overflow-hidden"> 
+                    <div className="bg-background-primary py-6">
                         {children}
                     </div>
                 </div>                

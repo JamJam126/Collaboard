@@ -68,9 +68,6 @@ const dummyData = [
 ];
 
 const BoardsPage = () => {
-
-    // const dummyData = [true, false, true]
-
     return(
         <AuthenticatedLayout>
             <div className="px-6 flex flex-col gap-6">

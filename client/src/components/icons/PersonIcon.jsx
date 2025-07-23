@@ -10,9 +10,9 @@ const PersonIcon = () => {
             <g
                 fill="none"
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
             >
                 <circle cx="12" cy="8.196" r="4.446" />
                 <path d="M19.608 20.25a7.608 7.608 0 0 0-15.216 0" />

@@ -9,6 +9,11 @@ const colors = {
         progressBg: "#E0E0E0",
         progressFill: "#FFCA28",
     },
+    searchBar: {
+        background: "#374159",
+        border: "#E5E5E5",
+        placeHolderText: "#FFFFFF99",
+    }
 };
 
 export default colors;

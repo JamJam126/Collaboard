@@ -19,6 +19,7 @@ module.exports = {
           yellow: "#FCA311"
         },
         card: colors.card,
+        searchBar: colors.searchBar,
       }
     },
   },

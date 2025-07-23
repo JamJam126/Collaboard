@@ -5,9 +5,9 @@ import { authentication } from "../middleware/authentication.js"
 
 const boardRouter = express.Router()
 
-boardRouter.get("/",authentication,getBoard)
-boardRouter.get("/:id",getBoardById)
-boardRouter.post("/",addBoard)
-boardRouter.put('/:id',updateBoard)
-boardRouter.delete('/:id',deleteBoard)
+boardRouter.get("/", authentication, getBoard)
+boardRouter.get("/:id", getBoardById)
+boardRouter.post("/", authentication, addBoard)
+boardRouter.put('/:id', updateBoard)
+boardRouter.delete('/:id', deleteBoard)
 export default boardRouter;

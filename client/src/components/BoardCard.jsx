@@ -5,7 +5,7 @@ import EmptyStarIcon from "./icons/EmptyStarIcon"
 import FilledStarIcon from "./icons/FilledStarIcon"
 import Avatar from "./Avatar"
 
-const BoardCard = ({ isStarred, title, users = [], progress = 0, tasks = {}, others }) => {
+const BoardCard = ({ isStarred, title, users = [], progress = 0, tasks = {}, others, onClick }) => {
 
     const [ starred, setStarred ] = useState(isStarred)
     const cardColors = colors.card
@@ -14,7 +14,8 @@ const BoardCard = ({ isStarred, title, users = [], progress = 0, tasks = {}, oth
     
     return (
         <div className="shrink-0 w-80 p-4 rounded-2xl flex flex-col gap-2.5 
-                      bg-card-background border border-card-border"
+                      bg-card-background border border-card-border cursor-pointer"
+            onClick={onClick}
         > 
             {/* HEADER */}
             <header className="w-full flex justify-between h-6">
@@ -33,8 +34,9 @@ const BoardCard = ({ isStarred, title, users = [], progress = 0, tasks = {}, oth
             
             {/* AVATARS */}
             <div className="flex gap-1.5">
-                {users.map((user) => (
+                {users.map((user, idx) => (
                     <Avatar
+                        key={idx}
                         src={user.avatar}
                         alt={user.name}
                     />

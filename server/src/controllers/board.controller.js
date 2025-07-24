@@ -1,4 +1,4 @@
-import { Board } from "../models/index.js"
+import { Board, BoardMember } from "../models/index.js"
 
 
 const getBoard = async (req, res) => {
@@ -24,6 +24,11 @@ const addBoard = async (req, res) => {
             return res.status(400).json({ message: 'Missing required fields' });
         }
         const result = await Board.create({ title, description, visibility, user_id })
+        const boardMember = await BoardMember.create({
+            user_id: user_id,
+            board_id: result.id, 
+            role:'admin'
+        });
         res.json(result);
     } catch (error) {
         console.log(error)
@@ -58,10 +63,12 @@ const deleteBoard = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 }
+
 export {
     getBoard,
     getBoardById,
     updateBoard,
     addBoard,
-    deleteBoard
+    deleteBoard,
+    inviteuser
 }

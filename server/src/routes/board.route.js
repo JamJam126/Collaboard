@@ -1,5 +1,5 @@
 import express from "express"
-import { addBoard, deleteBoard, getBoard, getBoardById, updateBoard } from "../controllers/board.controller.js"
+import { addBoard, deleteBoard, getBoard, getBoardById, inviteUser, updateBoard } from "../controllers/board.controller.js"
 import { authentication } from "../middleware/authentication.js"
 
 
@@ -10,4 +10,6 @@ boardRouter.get("/:id", getBoardById)
 boardRouter.post("/", authentication, addBoard)
 boardRouter.put('/:id', updateBoard)
 boardRouter.delete('/:id', deleteBoard)
+//Invite user to board
+boardRouter.post('/:boardId/invite',authentication,inviteUser)
 export default boardRouter;

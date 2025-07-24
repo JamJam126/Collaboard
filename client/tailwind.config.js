@@ -16,10 +16,14 @@ module.exports = {
           light: ""
         },
         brand: {
-          yellow: "#FCA311"
+          yellow: {
+            DEFAULT: "#FCA311",
+            hover: "#E5940F"
+          }
         },
         card: colors.card,
         searchBar: colors.searchBar,
+        list: colors.list,
       }
     },
   },

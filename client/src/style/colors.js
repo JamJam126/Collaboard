@@ -13,6 +13,9 @@ const colors = {
         background: "#374159",
         border: "#E5E5E5",
         placeHolderText: "#FFFFFF99",
+    },
+    list: {
+        background: "#0E1119"
     }
 };
 

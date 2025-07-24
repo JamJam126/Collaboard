@@ -3,7 +3,7 @@ import validator from "validator"
 
 const getBoard = async (req, res) => {
     const { id } = req.user
-    const result = await Board.findAll({ where: { user_id: id } });
+    const result = await BoardMember.findAll({ where: { user_id: id } });
     res.json(result);
 
 }

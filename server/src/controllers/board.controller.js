@@ -17,7 +17,8 @@ const getBoardById = async (req, res) => {
     }
 }
 const addBoard = async (req, res) => {
-    const { title, description, visibility, user_id } = req.body;
+    const user_id=req.user.id
+    const { title, description, visibility, } = req.body;
     try {
         if (!title || !visibility || !user_id) {
             return res.status(400).json({ message: 'Missing required fields' });
@@ -29,9 +30,9 @@ const addBoard = async (req, res) => {
     }
 }
 const updateBoard = async (req, res) => {
-
+    const user_id=req.user.id
     const id = req.params.id;
-    const { title, description, visibility, user_id } = req.body;
+    const { title, description, visibility} = req.body;
     try {
         const updateBoard = await Board.update(
             {title,description,visibility,user_id},

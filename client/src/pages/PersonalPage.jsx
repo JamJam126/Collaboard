@@ -4,7 +4,7 @@ const PersonalPage = () => {
 
     return(
         <AuthenticatedLayout>
-            Personal
+            <div className="h-"></div>
         </AuthenticatedLayout>
     )
 }

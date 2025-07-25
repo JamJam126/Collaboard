@@ -1,8 +1,9 @@
+import { useLocation, useNavigate } from "react-router-dom"
+import { useSidebar } from "../context/SidebarContext"
 import FolderIcon from "./icons/FolderIcon"
 import HomeIcon from "./icons/HomeIcon"
 import PersonIcon from "./icons/PersonIcon"
-import { useLocation, useNavigate } from "react-router-dom"
-import { useSidebar } from "../context/SidebarContext"
+import SignoutIcon from "./icons/SignoutIcon"
 
 const SideBar = () => {
     const { barStatus, toggleBar } = useSidebar();    
@@ -16,58 +17,73 @@ const SideBar = () => {
     ]
       
     return(
-        <div className={`${barStatus ? 'w-[240px] p-4' : 'w-[48px]'} py-2.5 flex flex-col gap-3 items-center 
-                      bg-[#2D3142] border-r border-r-[#4B516B] transition-all duration-75 ease-in-out`}
+        <div className={`${barStatus ? 'w-[240px] p-4' : 'w-[48px]'} bg-background-primary 
+                        border-r-2 box-content border-border transition-all duration-75 
+                        py-2.5 ease-in-out flex flex-col justify-between items-center`}
         >
-            <div className={`${barStatus ? 'flex justify-between w-full items-center' : ''} h-[30px]`}>
-                <h1 className={`${barStatus ? '' : 'hidden'} text-2xl font-medium text-white`}>Menu</h1>
-                <button className="w-6 h-[30px] text-white text-opacity-75"
-                    onClick={toggleBar}
-                >   
-                
-                    <svg className={`${barStatus ? '' : 'transform rotate-180'}`}
-                        xmlns="http://www.w3.org/2000/svg" 
+            <div className="w-full flex flex-col items-center gap-3 ">
+                <div className={`${barStatus ? 'flex justify-between w-full items-center' : ''} h-[30px]`}>
+                    <h1 className={`${barStatus ? '' : 'hidden'} text-2xl font-medium text-white`}>Menu</h1>
+                    <button className="w-6 h-[30px] text-white text-opacity-75"
+                        onClick={toggleBar}
+                    >   
+                    
+                        <svg className={`${barStatus ? '' : 'transform rotate-180'}`}
+                            xmlns="http://www.w3.org/2000/svg" 
+                            width="24" height="24" 
+                            viewBox="0 0 16 16"
+                        >
+                            <path fill="currentColor" 
+                                d="m9.707 8.5l.647.647a.5.5 0 0 1-.708.707l-1.5-1.5a.5.5 0 0 1 0-.707l1.5-1.5a.5.5 0 0 1 .708.707l-.647.646h1.791a.5.5 0 0 1 0 1zM4 3a2 2 0 0 0-2 2v6.002a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM3 5a1 1 0 0 1 1-1h2.002v8.002H4a1 1 0 0 1-1-1zm4.002 7.002V4H12a1 1 0 0 1 1 1v6.002a1 1 0 0 1-1 1z"
+                            />
+                        </svg>
+                    </button>
+                </div>
+                <button className={`h-8 bg-brand-yellow flex justify-center items-center rounded-lg
+                                text-background-primary ${barStatus ? 'w-full' : 'w-8'} `}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" 
                         width="24" height="24" 
-                        viewBox="0 0 16 16"
+                        viewBox="0 0 24 24"
                     >
-                        <path fill="currentColor" 
-                            d="m9.707 8.5l.647.647a.5.5 0 0 1-.708.707l-1.5-1.5a.5.5 0 0 1 0-.707l1.5-1.5a.5.5 0 0 1 .708.707l-.647.646h1.791a.5.5 0 0 1 0 1zM4 3a2 2 0 0 0-2 2v6.002a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM3 5a1 1 0 0 1 1-1h2.002v8.002H4a1 1 0 0 1-1-1zm4.002 7.002V4H12a1 1 0 0 1 1 1v6.002a1 1 0 0 1-1 1z"
+                        <path fill="none" 
+                            stroke="currentColor" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round" 
+                            strokeWidth="1.5" 
+                            d="M18 12h-6m0 0H6m6 0V6m0 6v6"
                         />
                     </svg>
-                </button>
-            </div>
-            <button className={`h-8 bg-[#FCA311] flex justify-center items-center rounded-lg
-                            text-[#2D3142] ${barStatus ? 'w-full' : 'w-8'} `}
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                    width="24" height="24" 
-                    viewBox="0 0 24 24"
-                >
-                    <path fill="none" 
-                          stroke="currentColor" 
-                          stroke-linecap="round" 
-                          stroke-linejoin="round" 
-                          stroke-width="1.5" 
-                          d="M18 12h-6m0 0H6m6 0V6m0 6v6"
-                    />
-                </svg>
-                <h1 className={`font-medium transition-opacity ease-linear duration-100 
-                            ${barStatus ? 'opacity-100' : 'opacity-0 hidden'}`}
-                >
-                    Create New
-                </h1>
-            </button>
-            <div className={`flex flex-col gap-1.5 ${barStatus ? "w-full " : "w-9"} items-center`}>
-                {barItems.map((item, idx) => (
-                    <button className={`h-7 w-full flex gap-2 items-center rounded-lg
-                                    ${barStatus ? "justify-start py-1 px-2" : "justify-center"}
-                                    ${location.pathname === item.path ? "text-[#2d3142] bg-white bg-opacity-75" : "text-white opacity-75"}`}
-                            onClick={() => navigate(item.path)}
+                    <h1 className={`font-medium transition-opacity ease-linear duration-100 
+                                ${barStatus ? 'opacity-100' : 'opacity-0 hidden'}`}
                     >
-                        <item.icon/> 
-                        <h1 className={`font-normal text-base ${barStatus ? "" : "hidden"}`} >{item.id}</h1>
-                    </button>
-                ))}
+                        Create New
+                    </h1>
+                </button>
+                <div className={`font-normal flex flex-col gap-1.5 ${barStatus ? "w-full " : "w-9"} items-center`}>
+                    {barItems.map((item, idx) => (
+                        <button 
+                            key={idx}
+                            className ={
+                                `h-7 w-full flex gap-2 items-center rounded-lg
+                                ${barStatus ? "justify-start py-1 px-2" : "justify-center"}
+                                ${location.pathname === item.path ? "font-medium text-background-primary bg-white bg-opacity-75" : "text-white opacity-75"}`
+                            }
+                            onClick={() => navigate(item.path)}
+                        >
+                            <item.icon/> 
+                            <h1 className={`text-base ${barStatus ? "" : "hidden"}`}>
+                                {item.id}
+                            </h1>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="py-2.5 text-white opacity-75">
+                <button title="Sign Out">
+                    <SignoutIcon /> 
+                </button>
             </div>
         </div>
     )

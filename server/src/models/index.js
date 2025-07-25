@@ -6,10 +6,14 @@ import Card from "./card.js";
 import BoardMember from "./boardMember.js";
 import ActivityLog from "./activity_log.js";
 import CardAssignment from "./card_assignment.js";
+import UserProfile from "./userProfile.js";
 
 // ✅ User <--> Board (one-to-many)
 User.hasMany(Board, { foreignKey: 'user_id' });
 Board.belongsTo(User, { foreignKey: 'user_id' });
+// ✅ User <--> Profile (onr-to-one)
+User.hasOne(UserProfile, { foreignKey: 'user_id' });
+UserProfile.belongsTo(User, { foreignKey: 'user_id' });
 
 // ✅ Board <--> List (one-to-many)
 Board.hasMany(List, { foreignKey: 'board_id' });
@@ -75,5 +79,6 @@ export {
   Card,
   BoardMember,
   ActivityLog,
-  CardAssignment
+  CardAssignment,
+  UserProfile
 };

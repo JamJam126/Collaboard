@@ -5,8 +5,6 @@ import 'dotenv/config'
 import { sequelize } from './models/index.js';
 import boardRouter from './routes/board.route.js';
 import userRouter from './routes/user.route.js';
-import listRouter from './routes/list.routes.js';
-import cardRouter from './routes/card.routes.js';
 
 // require("dotenv").config();
 
@@ -21,8 +19,6 @@ app.get("/api/health", (req, res) => {
 });
 app.use("/api/board",boardRouter);
 app.use("/api/user",userRouter)
-app.use("/api/list",listRouter)
-app.use("/api/card",cardRouter)
 
 const PORT = process.env.PORT ;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

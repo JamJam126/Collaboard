@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react"
+import { useParams } from "react-router-dom"
+import { getBoardById } from "../services/api"
 import AuthenticatedLayout from "../layout/AuthenticatedLayout"
 import BoardHeader from "../components/BoardHeader"
 import CollapseIcon from "../components/icons/CollapseIcon"
@@ -6,6 +8,8 @@ import ShareBoardModal from "../components/ShareBoardModal"
 
 const BoardView = () => {
 
+    const { id } = useParams()
+    const [ board, setBoard ] = useState({})
     const [ boardLists, setBoardLists ] = useState([])
     const [ activeListIndex, setActiveListIndex ] = useState(1)
     const [ isAddingList, setIsAddingList ] = useState(false)
@@ -13,17 +17,30 @@ const BoardView = () => {
     const [ newList, setNewList ] = useState('')
     const [ newCard, setNewCard ] = useState('')
     const [ modalActive, setModalActive ] = useState(false)
-    const [ listEdit, setListEdit ] = useState('')
-    const [ isEditingList, setIsEditingList ] = useState(false)
+
     const spanRefs = useRef({});
     const inputRef = useRef(null);
+
+    const fetchBoard = async () => {
+        try {
+            const data = await getBoardById(id)
+            console.log(data)
+            setBoard(data)
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchBoard()
+    }, [id])
 
     const getTitleWidth = (idx) => {
         const span = spanRefs.current[idx];
         if (span) {
             return span.offsetWidth + 4;
         }
-    return 50;
+        return 50;
     }
 
     const handleAddList = () => {
@@ -65,7 +82,7 @@ const BoardView = () => {
         <AuthenticatedLayout hideNav={true} hideBar={true}>
             
             <div className="h-screen flex flex-col">
-                <BoardHeader share={handleClickShare}/>
+                <BoardHeader title={board.title} share={handleClickShare}/>
 
                 <div className="p-4 flex gap-4 h-full">
                     {boardLists.map((list, idx) => (
@@ -99,10 +116,10 @@ const BoardView = () => {
                                                 updatedLists[idx].title = e.target.value;
                                                 setBoardLists(updatedLists);
                                             }}
-                                            className="bg-transparent outline-none font-semibold text-sm"
+                                            className="bg-transparent outline-none font-semibold text-sm cursor-pointer"
                                             style={{ width: `${getTitleWidth(idx)}px` }}
                                         />
-                                        </div>
+                                    </div>
                                 </div>
 
                                 <button className="h-8 w-8 p-2 flex items-center justify-center">
@@ -209,6 +226,7 @@ const BoardView = () => {
                 </div>
             </div>
             <ShareBoardModal 
+                boardMembers={board.BoardMembers}
                 active={modalActive}
                 onClose={() => setModalActive(false)}
             />

@@ -3,19 +3,31 @@ import validator from "validator"
 
 const getBoard = async (req, res) => {
     const { id } = req.user
+    console.log("user_id",id)
     const result = await BoardMember.findAll({ where: { user_id: id } });
+    console.log(result)
     res.json(result);
-
 }
+
 const getBoardById = async (req, res) => {
     const id = parseInt(req.params.id);
     try {
-        const result = await Board.findOne({ where: { id } });
+        const result = await Board.findOne({ where: { id },
+            include:[{
+                model: BoardMember,
+                include:[{
+                    model: User,
+                    attributes:["name","email"]
+                }],
+                attributes:["role"]
+            }]
+        });        
         res.json(result);
     } catch (error) {
         res.status(500).json({ errorMessage: error.message });
     }
 }
+
 const addBoard = async (req, res) => {
     const { title, description, visibility } = req.body;
     const user_id = req.user.id

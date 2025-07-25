@@ -10,6 +10,7 @@ boardRouter.get("/:id", getBoardById)
 boardRouter.post("/", authentication, addBoard)
 boardRouter.put('/:id', updateBoard)
 boardRouter.delete('/:id', deleteBoard)
+
 //Invite user to board
-boardRouter.post('/:boardId/invite',authentication,inviteUser)
+boardRouter.post('/:boardId/invite', authentication, inviteUser)
 export default boardRouter;

@@ -81,9 +81,10 @@ const BoardsPage = () => {
 	const fetchBoards = async () => {
 		try {
 			const data = await getBoards()
-
+			console.log(data)
+			
 			const enrichedBoards = data.map(board => ({
-				id: board.id,
+				id: board.board_id,
 				title: board.title,
 				isStarred: false,
 				progress: 70,

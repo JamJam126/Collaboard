@@ -3,9 +3,7 @@ import validator from "validator"
 
 const getBoard = async (req, res) => {
     const { id } = req.user
-    console.log("user_id",id)
-    const result = await BoardMember.findAll({ where: { user_id: id } });
-    console.log(result)
+    const result = await Board.findAll({ where: { user_id: id } });
     res.json(result);
 }
 
@@ -13,15 +11,16 @@ const getBoardById = async (req, res) => {
     const id = parseInt(req.params.id);
     try {
         const result = await Board.findOne({ where: { id },
+        include:[{
+            model: BoardMember,
             include:[{
-                model: BoardMember,
-                include:[{
-                    model: User,
-                    attributes:["name","email"]
-                }],
-                attributes:["role"]
-            }]
-        });        
+                model: User,
+                attributes:["name","email"]
+            }],
+            attributes:["role"]
+        }]
+        });
+        console.log(result)
         res.json(result);
     } catch (error) {
         res.status(500).json({ errorMessage: error.message });
@@ -86,7 +85,7 @@ const inviteUser = async (req, res) => {
 
 const updateBoard = async (req, res) => {
 
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const { title, description, visibility, user_id } = req.body;
     try {
         const updateBoard = await Board.update(
@@ -111,6 +110,7 @@ const deleteBoard = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 }
+
 
 export {
     getBoard,

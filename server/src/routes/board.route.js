@@ -14,5 +14,5 @@ boardRouter.delete('/:id',authentication,deleteBoard)
 
 boardRouter.get("/:id/list",authentication,getList)
 //Invite user to board
-boardRouter.post('/:boardId/invite',authentication,inviteUser)
+boardRouter.post('/:boardId/invite', authentication, inviteUser)
 export default boardRouter;

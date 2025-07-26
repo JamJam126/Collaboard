@@ -1,23 +1,26 @@
 import { useState, useEffect, useRef } from "react"
-import ShareBoardModal from "./ShareBoardModal";
+import AddUserIcon from "./icons/AddUserIcon"
 
-const BoardHeader = ({ share }) => {
+const BoardHeader = ({ share, title }) => {
 
-    const [ value, setValue ] = useState("Title")
+    const [ value, setValue ] = useState(title)
+    const [ boardTitle, setBoardTitle ] = useState('')
     const [ isEditing, setIsEditing ] = useState(false)
     const [ inputWidth, setInputWidth ] = useState(0)
     const spanRef = useRef(null)
 
     useEffect(() => {
         if (spanRef.current) {
-            let newWidth = 0;
-
-            if (!isEditing) newWidth = spanRef.current.offsetWidth + 4;
-            if (isEditing) newWidth = spanRef.current.offsetWidth + 24;
-
-            setInputWidth(newWidth);        
+            const newWidth = spanRef.current.offsetWidth + (isEditing ? 24 : 4);
+            setInputWidth(newWidth);
         }
-    }, [value])
+    }, [boardTitle, isEditing]);
+
+    useEffect(() => {
+        if (!isEditing) {
+            setBoardTitle(title);
+        }
+    }, [title]);
 
     const handleEditing = () => {
         setIsEditing(true);
@@ -45,13 +48,13 @@ const BoardHeader = ({ share }) => {
                     ref={spanRef}
                     className="absolute invisible whitespace-pre"
                     style={{ font: "inherit", padding: "0 2px" }}
-                > {value || ""}
+                > {boardTitle || ""}
                 </span>
 
                 <input
                     type="text"
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    value={boardTitle}
+                    onChange={(e) => setBoardTitle(e.target.value)}
                     onFocus={handleEditing}
                     onBlur={handleStopEditing}
                     className={`bg-transparent outline-none transition-all duration-150
@@ -61,12 +64,14 @@ const BoardHeader = ({ share }) => {
                 />
             </div>
 
-            <div>
+            <div className="flex gap-2">
                 <button
                     onClick={handleClickShare}
-                    className="h-8 px-3 py-1.5 text-sm font-medium bg-brand-yellow hover:bg-brand-yellow-hover text-[#11151E] rounded"
+                    className="h-8 px-3 py-1.5 text-sm font-medium bg-brand-yellow hover:bg-brand-yellow-hover 
+                            text-[#11151E] rounded flex items-center gap-2"
                 >
-                    Share
+                    <AddUserIcon />
+                    <span>Share</span>
                 </button>
             </div>
         </div>

@@ -5,8 +5,8 @@ const getBoard = async (req, res) => {
     const { id } = req.user
     const result = await Board.findAll({ where: { user_id: id } });
     res.json(result);
-
 }
+
 const getBoardById = async (req, res) => {
     const id = parseInt(req.params.id);
     try {
@@ -26,6 +26,7 @@ const getBoardById = async (req, res) => {
         res.status(500).json({ errorMessage: error.message });
     }
 }
+
 const addBoard = async (req, res) => {
     const { title, description, visibility } = req.body;
     const user_id = req.user.id

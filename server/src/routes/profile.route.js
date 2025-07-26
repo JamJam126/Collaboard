@@ -5,7 +5,7 @@ import { authentication } from "../middleware/authentication.js";
 
 const ProfileRoute = express.Router();
 
-ProfileRoute.get('/',authentication,getUserProfile)
+ProfileRoute.get('/',authentication, getUserProfile)
 ProfileRoute.post('/upload',authentication,uploadProfile);
 ProfileRoute.post('/update',authentication,updateProfile);
 

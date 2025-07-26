@@ -17,9 +17,9 @@ const SideBar = () => {
     ]
       
     return(
-        <div className={`${barStatus ? 'w-[240px] p-4' : 'w-[48px]'} bg-background-primary 
+        <aside className={`${barStatus ? 'w-[240px] p-4' : 'w-[48px]'} h-[calc(100vh-80px)] mt-20 bg-background-primary 
                         border-r-2 box-content border-border transition-all duration-75 
-                        py-2.5 ease-in-out flex flex-col justify-between items-center`}
+                        py-2.5 ease-in-out flex flex-col justify-between items-center fixed`}
         >
             <div className="w-full flex flex-col items-center gap-3 ">
                 <div className={`${barStatus ? 'flex justify-between w-full items-center' : ''} h-[30px]`}>
@@ -85,7 +85,7 @@ const SideBar = () => {
                     <SignoutIcon /> 
                 </button>
             </div>
-        </div>
+        </aside>
     )
 }
 

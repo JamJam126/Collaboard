@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import AddUserIcon from "./icons/AddUserIcon"
+import Logo from "../components/Logo"
 
 const BoardHeader = ({ share, title }) => {
 
@@ -39,31 +40,35 @@ const BoardHeader = ({ share, title }) => {
     return (
         <div className="h-14 p-3 bg-[#0000003d] text-white flex justify-between"
         >
-            {/* BOARD TITLE AND EDIT BAN */}
-            <div
-                className={`font-bold text-lg px-3 rounded-md relative
-                            hover:${ isEditing ? "" : "bg-slate-700"} flex items-center`}
-            >
-                <span
-                    ref={spanRef}
-                    className="absolute invisible whitespace-pre"
-                    style={{ font: "inherit", padding: "0 2px" }}
-                > {boardTitle || ""}
-                </span>
+            
+            <div className="flex items-center">
+                <Logo size={48}/>
+                {/* BOARD TITLE AND EDIT BAN */}
+                <div
+                    className={`font-bold text-lg px-3 rounded-md relative
+                                hover:${ isEditing ? "" : "bg-slate-700"} flex items-center`}
+                >
+                    <span
+                        ref={spanRef}
+                        className="absolute invisible whitespace-pre"
+                        style={{ font: "inherit", padding: "0 2px" }}
+                    > {boardTitle || ""}
+                    </span>
 
-                <input
-                    type="text"
-                    value={boardTitle}
-                    onChange={(e) => setBoardTitle(e.target.value)}
-                    onFocus={handleEditing}
-                    onBlur={handleStopEditing}
-                    className={`bg-transparent outline-none transition-all duration-150
-                                ${ isEditing ? "border px-4 rounded bg-[#0b171f] text-[#afabab]"
-                                : ""} font-bold text-lg`}
-                    style={{ width: `${inputWidth}px` }}
-                />
+                    <input
+                        type="text"
+                        value={boardTitle}
+                        onChange={(e) => setBoardTitle(e.target.value)}
+                        onFocus={handleEditing}
+                        onBlur={handleStopEditing}
+                        className={`bg-transparent outline-none transition-all duration-150
+                                    ${ isEditing ? "border px-4 rounded bg-[#0b171f] text-[#afabab]"
+                                    : "cursor-pointer"} font-bold text-lg`}
+                        style={{ width: `${inputWidth}px` }}
+                    />
+                </div>
+
             </div>
-
             <div className="flex gap-2">
                 <button
                     onClick={handleClickShare}

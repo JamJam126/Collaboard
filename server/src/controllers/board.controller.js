@@ -20,7 +20,6 @@ const getBoardById = async (req, res) => {
             attributes:["role"]
         }]
         });
-        console.log(result)
         res.json(result);
     } catch (error) {
         res.status(500).json({ errorMessage: error.message });

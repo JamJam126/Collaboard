@@ -15,25 +15,26 @@ const uploadProfile = async (req,res) =>{
         res.json({message:error.message});
     }
 }
+
 const updateProfile = async(req,res) =>{
     const user_id = req.user.id;
     const {public_id,secure_url}= req.body;
     try {
         const result = await UserProfile.update({
             public_id,
-            secure_url},
-        {where:{user_id}}
+            secure_url
+        },
+            {where:{user_id}}
         )
         res.json({message:"Sucessfully update profile"});
     } catch (error) {
         res.json({message:error.message});
     }
-
-
 }
+
 const getUserProfile = async (req,res) => {
+
     const {id,name,email} = req.user;
-    
     try {
         const profile = await UserProfile.findOne({where:{user_id:id},
         attributes:["public_id","secure_url"]

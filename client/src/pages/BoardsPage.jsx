@@ -84,7 +84,7 @@ const BoardsPage = () => {
 			console.log(data)
 			
 			const enrichedBoards = data.map(board => ({
-				id: board.board_id,
+				id: board.id,
 				title: board.title,
 				isStarred: false,
 				progress: 70,
@@ -124,7 +124,7 @@ const BoardsPage = () => {
 
     return(
         <AuthenticatedLayout>
-            <div className="px-6 py-6 flex flex-col gap-6">
+            <div className="mt-20 px-6 py-6 flex flex-col gap-6">
                 
                 {/* FOR BOARD TITLE AND SUB-TEXT*/}
 				<div className="flex justify-between items-center">

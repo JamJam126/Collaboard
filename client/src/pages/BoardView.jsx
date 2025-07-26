@@ -79,8 +79,7 @@ const BoardView = () => {
 
     {/* bg-[#8B5CF6] Purple Color */}
     return (
-        <AuthenticatedLayout hideNav={true} hideBar={true}>
-            
+        <div className="bg-background-primary">
             <div className="h-screen flex flex-col">
                 <BoardHeader title={board.title} share={handleClickShare}/>
 
@@ -230,7 +229,7 @@ const BoardView = () => {
                 active={modalActive}
                 onClose={() => setModalActive(false)}
             />
-        </AuthenticatedLayout>
+        </div>
     )
 }
 

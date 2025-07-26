@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage";
 import BoardsPage from "./pages/BoardsPage";
 import PersonalPage from "./pages/PersonalPage";
 import LoginPage from "./pages/LoginPage";
+import ProfilePage from "./pages/ProfilePage";
 import BoardView from "./pages/BoardView";
 import { SidebarProvider } from "./context/SidebarContext";
 import ProtectedRoute from "./components/protectedRoute";
@@ -36,6 +37,12 @@ function App() {
                         <Route path="/board/:id" element={
                             <ProtectedRoute>
                                 <BoardView />
+                            </ProtectedRoute>
+                        } />
+
+                        <Route path="/user/profile" element={
+                            <ProtectedRoute>
+                                <ProfilePage />
                             </ProtectedRoute>
                         } />
 

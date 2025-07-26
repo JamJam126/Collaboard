@@ -3,15 +3,18 @@ import { Op } from "sequelize";
 
 export const createList=async(req,res)=>{
     try {
-        const {title,board_id}=req.body
+        const {title, board_id} = req.body
+
         if(!title||!board_id){
-            return res.status(400).json({message:"missing requirement"})
+            return res.status(400).json({message: "missing requirement"})
         }
-        const existList=await List.findAll({where:{board_id}})
+
+        const existList = await List.findAll({where: {board_id}})
 
         const isDuplicate = existList.some((list) => list.title === title);
-        if (isDuplicate) {
-        return res.status(409).json({ message: "List name already exists" });
+        
+		if (isDuplicate) {
+        	return res.status(409).json({ message: "List name already exists" });
         }
 
         const position = existList.length + 1;
@@ -20,9 +23,9 @@ export const createList=async(req,res)=>{
             position,
             board_id
         })
-        return res.status(201).json({message:"list has been created."})
+        return res.status(201).json({message: "list has been created."})
     } catch (error) {
-        req.status(500).json({message:"something went wrong"})
+        req.status(500).json({message: "something went wrong"})
     }
 }
 

@@ -1,4 +1,4 @@
-import { Card } from "../models/index.js";
+import { Card,User,CardAssignment} from "../models/index.js";
 
 export const getCardsByListId = async (req, res) => {
   try {
@@ -7,6 +7,18 @@ export const getCardsByListId = async (req, res) => {
     const cards = await Card.findAll({
       where: { list_id },
       order: [["position", "ASC"]],
+      include: [
+        {
+          model: CardAssignment,
+          attributes:["user_id"],
+          include: [
+            {
+              model: User, // Optional: include assigned user info
+              attributes: ["name"], // Customize as needed
+            },
+          ],
+        },
+      ],
     });
 
     return res.status(200).json(cards);

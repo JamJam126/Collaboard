@@ -26,6 +26,7 @@ app.use("/api/auth",authRouter)
 app.use('/api/profile',ProfileRoute);
 app.use("/api/card",cardRouter)
 app.use("/api/list",listRouter)
+app.use("/api/user",userRouter)
 
 const PORT = process.env.PORT ;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,60 +1,69 @@
 import { User } from "../models/index.js";
-import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-import validator from "validator"
 
-export const registerUser=async(req,res)=>{
+
+export const changePassword = async (req, res) => {
+    const id = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+
     try {
-        const {name,email,password}=req.body
-
-        if(!name||!email||!password){
-            return res.status(400).json({message:"something missing"})
+        const user = await User.findOne({ where: { id } })
+        const isMatch = await bcrypt.compare(currentPassword, user.hashedPassword)
+        if (isMatch) {
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(newPassword, salt)
+            const updatePassword = await User.update(
+                { hashedPassword },
+                {where:{id}}
+            );
+            res.status(200).json({message:"Password Changes"});
+            
+        }else{
+            res.status(400).json({message:"Wrong Password"})
         }
-        if(!validator.isEmail(email)){
-            return res.status(400).json({message:"email using wrong format"})
-        }
-        if(password.length<8){
-            return res.status(400).json({message:"password to short"})
-        }
-        const exist=await User.findOne({where:{email}})
-        if(exist){
-            return res.status(409).json({message:"email already use"})
-        }
-        const salt=await bcrypt.genSalt(10)
-        const hashedPassword=await bcrypt.hash(password,salt)
-        const newUser=await User.create({
-            name,
-            email,
-            hashedPassword
-        })
-        
-        const token=jwt.sign({id:newUser.id,email,name},process.env.JWT_SECRET,{expiresIn:'7d'})
-        return res.status(201).json({token})
-
     } catch (error) {
-        console.log(error)
-        return res.status(500).json({message:"something went wrong"})
+        res.status(500).json({message:"Something went wrong"})
     }
 }
+export const changeEmail = async (req, res) => {
+    const id = req.user.id;
+    const { currentPassword,newEmail} = req.body;
 
-export const loginUser=async(req,res)=>{
     try {
-        const {email,password}=req.body
-        if(!email||!password){
-            return res.status(400).json({message:"something missing"})
+        const user = await User.findOne({ where: { id } })
+        const isMatch = await bcrypt.compare(currentPassword, user.hashedPassword)
+        if (isMatch) {
+            const updateEmail = await User.update(
+                { email : newEmail },
+                {where:{id}}
+            );
+            res.status(200).json({message:"Email changed"});
+            
+        }else{
+            res.status(400).json({message:"Wrong Password"})
         }
-        const exist=await User.findOne({where:{email}})
-        if(!exist){
-            return res.status(404).json({message:"email not found"})
-        }
-        const isMatch=await bcrypt.compare(password,exist.hashedPassword)
-        if(!isMatch){
-            return res.status(400).json({message:"wrong password"})
-        }
-        const token=jwt.sign({id:exist.id,email,name:exist.name},process.env.JWT_SECRET,{expiresIn:'7d'})
-        res.status(202).json({token})
     } catch (error) {
-        console.log(error)
-        return res.status(500).json({message:"something went wrong"})
+        res.status(500).json({message:"Something went wrong"})
+    }
+}
+export const changeUsername = async (req, res) => {
+    const id = req.user.id;
+    const { currentPassword, newUsername } = req.body;
+
+    try {
+        const user = await User.findOne({ where: { id } })
+        const isMatch = await bcrypt.compare(currentPassword, user.hashedPassword)
+        if (isMatch) {
+            const updateEmail = await User.update(
+                { name: newUsername },
+                {where:{id}}
+            );
+            res.status(200).json({message:"Email changed"});
+            
+        }else{
+            res.status(400).json({message:"Wrong Password"})
+        }
+    } catch (error) {
+        res.status(500).json({message:"Something went wrong"})
     }
 }

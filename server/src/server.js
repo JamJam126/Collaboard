@@ -8,6 +8,7 @@ import userRouter from './routes/user.route.js';
 import listRouter from './routes/list.routes.js';
 import cardRouter from './routes/card.routes.js';
 import ProfileRoute from './routes/profile.route.js';
+import authRouter from './routes/auth.route.js';
 
 // require("dotenv").config();
 
@@ -21,7 +22,7 @@ app.get("/api/health", (req, res) => {
     res.json({ message: "API is working!" });
 });
 app.use("/api/board",boardRouter);
-app.use("/api/auth",userRouter)
+app.use("/api/auth",authRouter)
 app.use('/api/profile',ProfileRoute);
 app.use("/api/card",cardRouter)
 app.use("/api/list",listRouter)

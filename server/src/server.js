@@ -21,7 +21,7 @@ app.get("/api/health", (req, res) => {
     res.json({ message: "API is working!" });
 });
 app.use("/api/board",boardRouter);
-app.use("/api/user",userRouter)
+app.use("/api/auth",userRouter)
 app.use('/api/profile',ProfileRoute);
 app.use("/api/card",cardRouter)
 app.use("/api/list",listRouter)

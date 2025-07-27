@@ -134,3 +134,37 @@ export const uploadProfileAvatar = async (public_id, secure_url) => {
     const response = await axiosInstance.post('/profile/upload', payload)
     return response.data
 }
+export const changePassword =  async (password,newPassword) =>{
+    const currentPassword =password
+    const payload={
+        currentPassword,
+        newPassword
+    }
+    const response = await axiosInstance.patch('/user/password',payload)
+    return response.data;
+}
+export const changeEmail =  async (currentPassword,newEmail)=>{
+
+    const payload = {
+        currentPassword,
+        newEmail
+    }
+    const response = await axiosInstance.patch("/user/email",payload)
+    if(response){
+        localStorage.removeItem("token");
+        localStorage.setItem("token",response.data.token);
+    }
+    return response.data;
+}
+export const changeName = async (currentPassword,newUsername) =>{
+    const payload ={
+        currentPassword,
+        newUsername
+    }
+    const response = await axiosInstance.patch("/user/username",payload);
+    if(response){
+        localStorage.removeItem('token')
+        localStorage.setItem('token',response.data.token);
+    }
+    return response.data;
+}

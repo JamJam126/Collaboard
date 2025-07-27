@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '../layout/AuthenticatedLayout';
-import { getUserProfile } from '../services/api';
+import { changeEmail, changeName, changePassword, getUserProfile } from '../services/api';
 import Avatar from '../components/Avatar';
 import DefaultAvatar from "../assets/avatars/avatar4.jpg"
 import ChangeUsernameModal from '../components/ChangeUsernameModal';
@@ -30,6 +30,36 @@ const ProfilePage = () => {
     useEffect(() => {
         getProfile()
     }, [])
+    const handleChangePassword = async (password,newPassword) =>{
+        try {
+            const response = await changePassword(password,newPassword);
+            setActiveChangePassword(false);
+            await getProfile();
+            console.log(response);
+        } catch (error) {
+            console.log(error.response.data)
+        }
+    }
+    const handleChangeEmail = async (password,newEmail) =>{
+        try {
+            const response = await changeEmail(password,newEmail);
+            setActiveChangeEmail(false)
+            await getProfile();
+            console.log(response)
+        } catch (error) {
+            console.log("error:",error)
+        }
+    }
+    const handleChangeUsername = async (password,newUsername) =>{
+        try {
+            const response = await changeName(password,newUsername);
+            setActiveChangeUsername(false)
+            await getProfile();
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <AuthenticatedLayout>
@@ -177,11 +207,13 @@ const ProfilePage = () => {
             <ChangeUsernameModal
                 active={activeChangeUsername}
                 onClose={() => setActiveChangeUsername(false)}
+                onSubmitChange={(password,newUsername)=>handleChangeUsername(password,newUsername)}
             />
 
             <ChangeEmailModal 
                 active={activeChangeEmail}
                 onClose={() => setActiveChangeEmail(false)}
+                onSubmitChange={(password,newEmail)=>handleChangeEmail(password,newEmail)}
             />
 
             <ChangeAvatarModal
@@ -192,6 +224,7 @@ const ProfilePage = () => {
             <ChangePasswordModal
                 active={activeChangePassword}
                 onClose={() => setActiveChangePassword(false)}
+                onSubmitChange={(password,newPassword)=>handleChangePassword(password,newPassword)}
             />
 
         </AuthenticatedLayout>

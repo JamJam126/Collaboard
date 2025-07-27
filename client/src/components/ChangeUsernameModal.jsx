@@ -2,13 +2,15 @@
 import { useState } from "react";
 import Modal from "./Modal";
 
-const ChangeUsernameModal = ({ active, onClose }) => {
+const ChangeUsernameModal = ({ active, onClose,onSubmitChange }) => {
 
     const [ newUsername, setNewUsername ] = useState('');
     const [ password, setPassword ] = useState('');
 
     const handleSubmit = () => {
-
+        setNewUsername("")
+        setPassword("")
+        onSubmitChange(password,newUsername)
     };
 
     return(
@@ -45,7 +47,7 @@ const ChangeUsernameModal = ({ active, onClose }) => {
                     Close
                 </button>
                 <button 
-                    // onClick={handleCreate}
+                    onClick={handleSubmit}
                     className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
                     Create

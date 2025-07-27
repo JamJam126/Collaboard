@@ -1,13 +1,17 @@
 import { useState } from "react";
 import Modal from "./Modal";
+import { changePassword } from "../services/api";
 
-const ChangePasswordModal = ({ active, onClose }) => {
+const ChangePasswordModal = ({ active, onClose,onSubmitChange}) => {
 
     const [ newPassword, setNewPassword ] = useState('');
     const [ password, setPassword ] = useState('');
 
-    const handleSubmit = () => {
-
+    const handleSubmit = async () => {
+        setNewPassword('')
+        setPassword('')
+        onSubmitChange(password,newPassword);
+        
     };
 
     return(
@@ -36,6 +40,8 @@ const ChangePasswordModal = ({ active, onClose }) => {
                         focus:border-gray-600 placeholder:text-sm border`}  
             />
 
+            
+
             <div className="flex justify-between items-center space-x-2 mt-6">
                 <button
                     onClick={() => onClose()}
@@ -44,7 +50,7 @@ const ChangePasswordModal = ({ active, onClose }) => {
                     Close
                 </button>
                 <button 
-                    // onClick={handleCreate}
+                    onClick={handleSubmit}
                     className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
                     Create

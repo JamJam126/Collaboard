@@ -77,7 +77,7 @@ const BoardHeader = ({ share, title, members }) => {
                 <div className="flex gap-1">
                     {boardMembers?.map((member) => (
                         <Avatar 
-                            src={member?.User?.UserProfile?.secure_url}
+                            src={member?.User?.UserProfile?.secure_url || DefaultAvatar}
                             alt={member.User.name}
                         />
                     ))}

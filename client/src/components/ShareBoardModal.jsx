@@ -2,14 +2,16 @@ import { useState, useEffect } from "react"
 import Avatar from "./Avatar"
 import { inviteUser } from "../services/api"
 
-const ShareBoardModal = ({ boardMembers, active, onClose, onCreate }) => {
+const ShareBoardModal = ({ id,  boardMembers, active, onClose, onCreate }) => {
 
     const [ members, setMembers ] = useState([]);
     const [ toSearch, setToSearch ] = useState('')
+    const [ boardId, setBoardId ] = useState(null)
 
     useEffect(() => {
         if (active) {
             setMembers(boardMembers);
+            setBoardId(id)
         }
     }, [active, boardMembers]);
 
@@ -17,7 +19,7 @@ const ShareBoardModal = ({ boardMembers, active, onClose, onCreate }) => {
 
     const handleInviteUser = async () => {
         try {
-            const response = await inviteUser(18, toSearch, 'editor')
+            const response = await inviteUser(boardId, toSearch, 'editor')
             console.log(response)
             setToSearch('')
             onClose()

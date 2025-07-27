@@ -25,7 +25,7 @@ export const createList=async(req,res)=>{
         })
         return res.status(201).json({message: "list has been created."})
     } catch (error) {
-        req.status(500).json({message: "something went wrong"})
+        res.status(500).json({message: "something went wrong"})
     }
 }
 

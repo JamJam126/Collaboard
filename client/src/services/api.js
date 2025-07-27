@@ -100,6 +100,9 @@ export const inviteUser = async (id, invitedUser, role) => {
         role
     }
 
+    console.log(id)
+    console.log(payload)
+
     const response = await axiosInstance.post(`/board/${id}/invite`, payload);
     return response.data;
 }

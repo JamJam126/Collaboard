@@ -39,14 +39,24 @@ const getBoardById = async (req, res) => {
     }
 }
 
+const getPersonalBoard = async (req, res) => {
+    const id = parseInt(req.user.id)
+    try {
+        const result = await Board.findOne({ where: { user_id: id, visibility:'personal' }});
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ message:error });
+    }
+}
+
 const addBoard = async (req, res) => {
-    const { title, description, visibility } = req.body;
+    const { title, description, visibility,favorite } = req.body;
     const user_id = req.user.id
     try {
         if (!title || !visibility || !user_id) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
-        const result = await Board.create({ title, description, visibility, user_id })
+        const result = await Board.create({ title, description, visibility,favorite, user_id })
         const boardMember = await BoardMember.create({
             user_id: user_id,
             board_id: result.id,
@@ -98,10 +108,10 @@ const inviteUser = async (req, res) => {
 const updateBoard = async (req, res) => {
 
     const id = parseInt(req.params.id);
-    const { title, description, visibility, user_id } = req.body;
+    const { title, description, visibility,favorite, user_id } = req.body;
     try {
         const updateBoard = await Board.update(
-            { title, description, visibility, user_id },
+            { title, description, visibility,favorite, user_id },
             { where: { id } })
         res.json(updateBoard);
     } catch (error) {
@@ -130,5 +140,6 @@ export {
     updateBoard,
     addBoard,
     deleteBoard,
-    inviteUser
+    inviteUser,
+    getPersonalBoard
 }

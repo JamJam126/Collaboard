@@ -1,24 +1,34 @@
+import { where } from "sequelize"
 import { Board, BoardMember, User } from "../models/index.js"
 import validator from "validator"
 
 const getBoard = async (req, res) => {
     const { id } = req.user
-    const result = await Board.findAll({ where: { user_id: id } });
+    const result = await BoardMember.findAll(
+        {
+            where: { user_id: id }, include: [{
+                model: Board,
+                attributes: ["title"]
+            }]
+        }
+
+    );
     res.json(result);
 }
 
 const getBoardById = async (req, res) => {
     const id = parseInt(req.params.id);
     try {
-        const result = await Board.findOne({ where: { id },
-        include:[{
-            model: BoardMember,
-            include:[{
-                model: User,
-                attributes:["name","email"]
-            }],
-            attributes:["role"]
-        }]
+        const result = await Board.findOne({
+            where: { id },
+            include: [{
+                model: BoardMember,
+                include: [{
+                    model: User,
+                    attributes: ["name", "email"]
+                }],
+                attributes: ["role"]
+            }]
         });
         res.json(result);
     } catch (error) {
@@ -59,8 +69,8 @@ const inviteUser = async (req, res) => {
                     role: role
                 })
                 res.json(newBoardMember);
-            }else{
-                res.status(400).json({message:"user not found"})
+            } else {
+                res.status(400).json({ message: "user not found" })
             }
         } else {
             const foundUser = await User.findOne({ where: { name: invitedUser } })
@@ -71,8 +81,8 @@ const inviteUser = async (req, res) => {
                     role: role
                 })
                 res.json(newBoardMember);
-            }else{
-                res.status(400).json({message:"user not found"})
+            } else {
+                res.status(400).json({ message: "user not found" })
             }
         }
     } catch (error) {

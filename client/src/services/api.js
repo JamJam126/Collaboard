@@ -8,6 +8,11 @@ export const ping = async () => {
     return response.data;
 }
 
+export const getPersonalBoard = async () => {
+    const response = await axiosInstance.get('/board/user/personal')
+    return response.data
+}
+
 export const getBoards = async () => {
     const response = await axiosInstance.get(`/board`);
     return response.data;

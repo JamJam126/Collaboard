@@ -9,7 +9,11 @@ const Board=sequelize.define('Board',{
         defaultValue:'public',
         allowNull:false,
     },
-    favorite: DataTypes.BOOLEAN
+    favorite: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+    }
 })
 
 export default Board

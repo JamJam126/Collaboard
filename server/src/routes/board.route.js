@@ -8,7 +8,7 @@ const boardRouter = express.Router()
 
 boardRouter.get("/", authentication, getBoard)
 boardRouter.get("/:id", authentication, getBoardById)
-boardRouter.get('/user/personal',authentication, getPersonalBoard)
+boardRouter.get('/user/personal', authentication, getPersonalBoard)
 boardRouter.post("/", authentication, addBoard)
 boardRouter.put('/:id', authentication, updateBoard)
 boardRouter.delete('/:id', authentication, deleteBoard)

@@ -76,6 +76,7 @@ import { useNavigate } from "react-router-dom"
 const BoardsPage = () => {
 	const [ boards, setBoards ] = useState([])
 	const [ modalActive, setModalActive ] = useState(false)
+	const [reload,setReload] = useState(false);
 	const navigate = useNavigate()
 
 	const fetchBoards = async () => {
@@ -107,12 +108,14 @@ const BoardsPage = () => {
 
 	useEffect(() => {
 		fetchBoards();
-	}, [])
+	}, [reload])
 
 	const handleCreateBoard = async (title, description, visibility) => {
 		try {
-			const response = createBoards(title, description, visibility)
+			const response = await createBoards(title, description, visibility)
 			console.log(response)
+			setReload(prev =>!prev);
+			setModalActive(false)
 		} catch(err) {
 			console.error(err);
 		}

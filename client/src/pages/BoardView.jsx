@@ -14,6 +14,10 @@ import BoardHeader from "../components/BoardHeader"
 import MenuIcon from "../components/icons/MenuIcon"
 import ShareBoardModal from "../components/ShareBoardModal"
 import CardDetailModal from "../components/CardDetailModal"
+import {io} from 'socket.io-client'
+
+const socket = io('http://localhost:4000',{autoConnect:false})
+
 
 const BoardView = () => {
 
@@ -32,6 +36,9 @@ const BoardView = () => {
 
     const spanRefs = useRef({});
     const inputRef = useRef(null);
+
+    const boardId = id;
+
 
     useEffect(() => {
         const fetchBoardData = async () => {
@@ -56,6 +63,20 @@ const BoardView = () => {
         };
 
         fetchBoardData();
+
+        const refreshHandler = () =>{
+            fetchBoardData();
+        }
+
+        socket.connect();
+        socket.emit('joinBoard',id);
+        
+        socket.on('refreshBoard',refreshHandler);
+
+        return ()=>{
+        socket.off('refreshBoard',refreshHandler)
+        socket.disconnect();
+        }
     }, [id]);
 
     const getTitleWidth = (idx) => {
@@ -82,17 +103,21 @@ const BoardView = () => {
             setBoardLists(updatedLists);
             setNewList('');
             setIsAddingList(false);
+            socket.emit('boardChanged',{boardId:id});
+            console.log("something happen");
+            
         } catch (err) {
             console.error("Error creating list:", err);
         }
     };
 
-    const handleDeleteList = async (id) => {
+    const handleDeleteList = async (Id) => {
         try {
             const isConfirmed = window.confirm("Are you sure you want to delete this list?");
             if (!isConfirmed) return;
 
-            const response = await deleteList(id)
+            const response = await deleteList(Id)
+            socket.emit('boardChanged',{boardId:id});
             console.log(response)
         } catch (error) {
             console.error(error)
@@ -119,6 +144,7 @@ const BoardView = () => {
             setNewCard('');
             setIsAddingCard(false);
             setActiveListIndex(null);
+            socket.emit('boardChanged',{boardId:id});
         } catch (err) {
             console.error("Failed to create card:", err);
         }
@@ -134,6 +160,8 @@ const BoardView = () => {
         }
 
         setActiveCard(null)
+        socket.emit('boardChanged',{boardId:id});
+
     }
 
     const handleClickShare = () => {

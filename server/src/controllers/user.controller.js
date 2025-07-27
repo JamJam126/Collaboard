@@ -1,5 +1,7 @@
 import { User } from "../models/index.js";
 import bcrypt from "bcrypt"
+import validator from "validator"
+import jwt from "jsonwebtoken"
 
 
 export const changePassword = async (req, res) => {
@@ -33,11 +35,14 @@ export const changeEmail = async (req, res) => {
         const user = await User.findOne({ where: { id } })
         const isMatch = await bcrypt.compare(currentPassword, user.hashedPassword)
         if (isMatch) {
+            if(!validator.isEmail(newEmail)) return res.status(404).json({message:"invalid Email"})
             const updateEmail = await User.update(
                 { email : newEmail },
                 {where:{id}}
             );
-            res.status(200).json({message:"Email changed"});
+            const updatedUser = await User.findOne({ where:{id}});
+            const token = jwt.sign({id:id,email:updatedUser.email,name:updatedUser.name},process.env.JWT_SECRET,{expiresIn:'7d'})
+            res.status(200).json({token});
             
         }else{
             res.status(400).json({message:"Wrong Password"})
@@ -54,11 +59,13 @@ export const changeUsername = async (req, res) => {
         const user = await User.findOne({ where: { id } })
         const isMatch = await bcrypt.compare(currentPassword, user.hashedPassword)
         if (isMatch) {
-            const updateEmail = await User.update(
+            const updateUsername = await User.update(
                 { name: newUsername },
                 {where:{id}}
             );
-            res.status(200).json({message:"Email changed"});
+            const updatedUser = await User.findOne({ where:{id}});
+            const token = jwt.sign({id:id,email:updatedUser.email,name:updatedUser.name},process.env.JWT_SECRET,{expiresIn:'7d'})
+            res.status(200).json({token});
             
         }else{
             res.status(400).json({message:"Wrong Password"})

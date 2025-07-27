@@ -1,12 +1,16 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { useSidebar } from "../context/SidebarContext"
+import CreateBoardModal from "./CreateBoardModal"
 import FolderIcon from "./icons/FolderIcon"
 import HomeIcon from "./icons/HomeIcon"
 import PersonIcon from "./icons/PersonIcon"
 import SignoutIcon from "./icons/SignoutIcon"
+import { useState } from "react"
+import { createBoards } from "../services/api"
 
 const SideBar = () => {
-    const { barStatus, toggleBar } = useSidebar();    
+    const { barStatus, toggleBar } = useSidebar(); 
+    const [ modalActive, setModalActive ] = useState(false) 
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -15,6 +19,17 @@ const SideBar = () => {
         { id: "Boards", path: "/boards", icon: FolderIcon },
         { id: "Personal", path: "/personal", icon: PersonIcon }
     ]
+
+    const handleCreateBoard = async (title, description, visibility) => {
+        try {
+            const response = await createBoards(title, description, visibility)
+            console.log(response)
+            // setReload(prev =>!prev);
+            setModalActive(false)
+        } catch(err) {
+            console.error(err);
+        }
+    }
       
     return(
         <aside className={`${barStatus ? 'w-[240px] p-4' : 'w-[48px]'} h-[calc(100vh-80px)] mt-20 bg-background-primary 
@@ -39,8 +54,10 @@ const SideBar = () => {
                         </svg>
                     </button>
                 </div>
-                <button className={`h-8 bg-brand-yellow flex justify-center items-center rounded-lg
-                                text-background-primary ${barStatus ? 'w-full' : 'w-8'} `}
+                <button 
+                    className={`h-8 bg-brand-yellow hover:bg-brand-yellow-hover flex justify-center items-center rounded-lg
+                            text-background-primary ${barStatus ? 'w-full' : 'w-8'} `}
+                    onClick={() =>setModalActive(true)}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" 
                         width="24" height="24" 
@@ -85,6 +102,12 @@ const SideBar = () => {
                     <SignoutIcon /> 
                 </button>
             </div>
+
+            <CreateBoardModal 
+				active={modalActive}
+				onClose={() => setModalActive(false)}
+				onCreate={(title, description, visibility) => handleCreateBoard(title, description, visibility)}
+			/>
         </aside>
     )
 }

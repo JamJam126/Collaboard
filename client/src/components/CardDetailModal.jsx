@@ -4,7 +4,7 @@ import Avatar from "./Avatar";
 import { assignCard, removeCardAssignment, deleteCard } from "../services/api";
 import Avatar3 from "../assets/avatars/avatar3.png";
 
-const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
+const CardDetailModal = ({ active, onClose, card, onSave, onDelete, members, personal = false }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [assignedUser, setAssignedUser] = useState('');
@@ -79,27 +79,19 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
         onClose();
     };
 
-    const handleDelete = async () => {
-        try {
-
-            const response = await deleteCard(card.id)
-            console.log(response)
-            onClose();
-        } catch (error) {
-            console.error("Error deleting card:", error);
-        }
+    const handleDelete = () => {
+        onDelete(card.id)
     };
 
     const getMemberProfile = (userId) =>
         boardMembers.find(m => m.User?.id === userId);
 
-    const unassignedMembers = boardMembers.filter(m => !assignedMemberIds.includes(m.User?.id));
+    const unassignedMembers = boardMembers?.filter(m => !assignedMemberIds.includes(m.User?.id));
 
     if (!active) return null;
 
     return (
         <Modal active={active}>
-            {/* Editable Title */}
             <div
                 className={`font-bold text-2xl px-2 py-1 rounded-md relative w-fit
                             hover:${isEditingTitle ? '' : 'bg-slate-700'} flex items-center`}
@@ -126,56 +118,56 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
                 />
             </div>
 
-            {/* Assigned Members Section */}
-            <div className="ml-4 space-y-2 mt-4">
-                <h1 className="text-gray-400">Assigned Members</h1>
-                <div className="flex items-center gap-2 relative">
-                    {assignedMemberIds.map(userId => {
-                        const member = getMemberProfile(userId);
-                        return (
-                            <div
-                                key={userId}
-                                onClick={() => handleRemove(userId)}
-                                className="cursor-pointer"
-                                title="Click to remove"
-                            >
-                                <Avatar
-                                    src={member?.User?.UserProfile?.secure_url || Avatar3}
-                                    size={40}
-                                />
-                            </div>
-                        );
-                    })}
-
-                    <button
-                        className="h-10 w-10 bg-card-background text-2xl rounded-full flex items-center justify-center"
-                        onClick={() => setShowDropdown(prev => !prev)}
-                    > + </button>
-
-                    {showDropdown && (
-                        <div className="absolute top-12 left-0 z-50 bg-[#1e1e1e] border border-gray-700 rounded shadow-md w-60 max-h-64 overflow-auto">
-                            {unassignedMembers.length === 0 && (
-                                <div className="p-2 text-sm text-gray-400">No available members</div>
-                            )}
-                            {unassignedMembers.map(member => (
+            {!personal &&             
+                <div className="ml-4 space-y-2 mt-4">
+                    <h1 className="text-gray-400">Assigned Members</h1>
+                    <div className="flex items-center gap-2 relative">
+                        {assignedMemberIds.map(userId => {
+                            const member = getMemberProfile(userId);
+                            return (
                                 <div
-                                    key={member.User?.id}
-                                    onClick={() => handleAssign(member.User?.id)}
-                                    className="flex items-center gap-3 px-3 py-2 hover:bg-gray-700 cursor-pointer"
+                                    key={userId}
+                                    onClick={() => handleRemove(userId)}
+                                    className="cursor-pointer"
+                                    title="Click to remove"
                                 >
                                     <Avatar
-                                        src={member.User?.UserProfile?.secure_url || Avatar3}
-                                        size={32}
+                                        src={member?.User?.UserProfile?.secure_url || Avatar3}
+                                        size={40}
                                     />
-                                    <div className="text-sm text-white">{member.User?.name}</div>
                                 </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
+                            );
+                        })}
 
-            {/* Description */}
+                        <button
+                            className="h-10 w-10 bg-card-background text-2xl rounded-full flex items-center justify-center"
+                            onClick={() => setShowDropdown(prev => !prev)}
+                        > + </button>
+
+                        {showDropdown && (
+                            <div className="absolute top-12 left-0 z-50 bg-[#1e1e1e] border border-gray-700 rounded shadow-md w-60 max-h-64 overflow-auto">
+                                {unassignedMembers.length === 0 && (
+                                    <div className="p-2 text-sm text-gray-400">No available members</div>
+                                )}
+                                {unassignedMembers.map(member => (
+                                    <div
+                                        key={member.User?.id}
+                                        onClick={() => handleAssign(member.User?.id)}
+                                        className="flex items-center gap-3 px-3 py-2 hover:bg-gray-700 cursor-pointer"
+                                    >
+                                        <Avatar
+                                            src={member.User?.UserProfile?.secure_url || Avatar3}
+                                            size={32}
+                                        />
+                                        <div className="text-sm text-white">{member.User?.name}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            }
+
             <div className="flex flex-col gap-2 mt-4">
                 <label>Description</label>
                 <textarea

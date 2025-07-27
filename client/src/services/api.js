@@ -29,6 +29,11 @@ export const createBoards = async (title, description, visibility) => {
     return response.data
 }
 
+export const getListsByBoardId = async (board_id) => {
+    const response = await axiosInstance.get(`/board/${board_id}/list`);
+    return response.data;
+};
+
 export const createList = async (board_id, title) => {
     const payload = {
         board_id, 
@@ -38,6 +43,56 @@ export const createList = async (board_id, title) => {
     const response = await axiosInstance.post('/list', payload)
     return response.data
 }
+
+export const deleteList = async (id) => {
+    const response = await axiosInstance.delete(`/list/${id}`);
+    return response.data;
+};
+
+export const updateList = async (id, updates) => {
+    const response = await axiosInstance.put(`/list/${id}`, updates);
+    return response.data;
+};
+
+export const getCardsByListId = async (list_id) => {
+    const response = await axiosInstance.get(`/list/${list_id}/card`);
+    return response.data;
+};
+
+export const createCard = async (list_id, title, description = "", status = "to-do", start_at = null, due_at = null) => {
+    const payload = { 
+        list_id, 
+        title, 
+        description, 
+        status, 
+        start_at, 
+        due_at 
+    };
+    const response = await axiosInstance.post('/card', payload);
+    return response.data;
+};
+
+export const updateCard = async (id, updates) => {
+    const response = await axiosInstance.put(`/card/${id}`, updates);
+    return response.data;
+};
+
+export const deleteCard = async (id) => {
+    const response = await axiosInstance.delete(`/card/${id}`);
+    return response.data;
+};
+
+export const assignCard = async (card_id, user_id) => {
+    const response = await axiosInstance.post(`/card/assign/${card_id}`, { user_id });
+    return response.data;
+};
+
+export const removeCardAssignment = async (card_id, user_id) => {
+    const response = await axiosInstance.delete(`/card/remove/${card_id}`, {
+        data: { user_id },
+    });
+    return response.data;
+};
 
 export const inviteUser = async (id, invitedUser, role) => {
     const payload = {

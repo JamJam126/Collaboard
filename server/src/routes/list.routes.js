@@ -7,7 +7,7 @@ const listRouter=express.Router()
 
 listRouter.get("/:id/card",authentication,getCardsByListId)
 
-listRouter.post("/",authentication,createList);
+listRouter.post("/",authentication, createList);
 
 listRouter.put("/:id",authentication,updateList)
 

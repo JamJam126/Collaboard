@@ -1,4 +1,4 @@
-import { Board, BoardMember, User } from "../models/index.js"
+import { Board, BoardMember, User, UserProfile } from "../models/index.js"
 import validator from "validator"
 
 const getBoard = async (req, res) => {
@@ -15,7 +15,11 @@ const getBoardById = async (req, res) => {
             model: BoardMember,
             include:[{
                 model: User,
-                attributes:["name","email"]
+                attributes:["id","name","email"],
+                include: [{
+                    model: UserProfile,
+                    attributes: ["public_id","secure_url"]
+                }]
             }],
             attributes:["role"]
         }]

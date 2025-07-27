@@ -1,39 +1,63 @@
 import { useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
-import { getBoardById } from "../services/api"
-import AuthenticatedLayout from "../layout/AuthenticatedLayout"
+import { 
+    getBoardById,
+    getListsByBoardId,
+    createList,
+    getCardsByListId,
+    updateList,
+    deleteList,
+    createCard,
+    updateCard
+} from "../services/api"
 import BoardHeader from "../components/BoardHeader"
-import CollapseIcon from "../components/icons/CollapseIcon"
+import MenuIcon from "../components/icons/MenuIcon"
 import ShareBoardModal from "../components/ShareBoardModal"
+import CardDetailModal from "../components/CardDetailModal"
 
 const BoardView = () => {
 
     const { id } = useParams()
     const [ board, setBoard ] = useState({})
     const [ boardLists, setBoardLists ] = useState([])
-    const [ activeListIndex, setActiveListIndex ] = useState(1)
+    const [ showCardDetail, setShowCardDetail ] = useState(false)
+    const [ activeListIndex, setActiveListIndex ] = useState(null)
+    const [ activeCard, setActiveCard ] = useState(null)
     const [ isAddingList, setIsAddingList ] = useState(false)
     const [ isAddingCard, setIsAddingCard ] = useState(false)
     const [ newList, setNewList ] = useState('')
     const [ newCard, setNewCard ] = useState('')
     const [ modalActive, setModalActive ] = useState(false)
+    const [ openMenuIndex, setOpenMenuIndex ] = useState(null)
 
     const spanRefs = useRef({});
     const inputRef = useRef(null);
 
-    const fetchBoard = async () => {
-        try {
-            const data = await getBoardById(id)
-            console.log(data)
-            setBoard(data)
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     useEffect(() => {
-        fetchBoard()
-    }, [id])
+        const fetchBoardData = async () => {
+            try {
+                const boardData = await getBoardById(id);
+                setBoard(boardData);
+                console.log(boardData)
+
+                const lists = await getListsByBoardId(id);
+
+                const listsWithCards = await Promise.all(
+                    lists.map(async (list) => {
+                        const cards = await getCardsByListId(list.id);
+                        return { ...list, tasks: cards, isCollapsed: false };
+                    })
+                );
+                console.log(listsWithCards)
+
+                setBoardLists(listsWithCards);
+            } catch (error) {
+                console.error("Error fetching board data:", error);
+            }
+        };
+
+        fetchBoardData();
+    }, [id]);
 
     const getTitleWidth = (idx) => {
         const span = spanRefs.current[idx];
@@ -43,34 +67,74 @@ const BoardView = () => {
         return 50;
     }
 
-    const handleAddList = () => {
+    const handleAddList = async () => {
         if (!newList.trim()) return;
 
-        const newListObj = {
-            title: newList.trim(),
-            isCollapsed: false,
-            tasks: [],
-        };
+        try {
+            const created = await createList(id, newList.trim());
+            const lists = await getListsByBoardId(id);
+            const updatedLists = await Promise.all(
+                lists.map(async (list) => {
+                    const cards = await getCardsByListId(list.id);
+                    return { ...list, tasks: cards };
+                })
+            );
 
-        setBoardLists([...boardLists, newListObj]);
-        setNewList('');
-        setIsAddingList(false);
+            setBoardLists(updatedLists);
+            setNewList('');
+            setIsAddingList(false);
+        } catch (err) {
+            console.error("Error creating list:", err);
+        }
     };
 
-    const handleAddTask = () => {
+    const handleDeleteList = async (id) => {
+        try {
+            const isConfirmed = window.confirm("Are you sure you want to delete this list?");
+            if (!isConfirmed) return;
+
+            const response = await deleteList(id)
+            console.log(response)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const handleAddTask = async () => {
         if (!newCard.trim() || activeListIndex === null || !boardLists[activeListIndex]) return;
 
-        const updatedLists = [...boardLists]
+        const targetList = boardLists[activeListIndex];
 
-        const newTaskCard = {
-            title: newCard.trim()
-        } 
+        try {
+            await createCard(
+                targetList.id,
+                newCard.trim()
+            )
 
-        updatedLists[activeListIndex].tasks.push(newTaskCard);
-        setBoardLists(updatedLists);
-        setNewCard('');
-        setIsAddingCard(false);
-        setActiveListIndex(null);
+            const cards = await getCardsByListId(targetList.id);
+
+            const updatedLists = [...boardLists];
+            updatedLists[activeListIndex].tasks = cards;
+            setBoardLists(updatedLists);
+
+            setNewCard('');
+            setIsAddingCard(false);
+            setActiveListIndex(null);
+        } catch (err) {
+            console.error("Failed to create card:", err);
+        }
+    }
+
+    const handleUpdateCard = async (update) => {
+        try {
+            const response = await updateCard(activeCard.id, update)
+            console.log(response)
+        } catch (Error) {
+            console.error(Error);
+            
+        }
+
+        setActiveCard(null)
     }
 
     const handleClickShare = () => {
@@ -81,7 +145,11 @@ const BoardView = () => {
     return (
         <div className="bg-background-primary">
             <div className="h-screen flex flex-col">
-                <BoardHeader title={board.title} share={handleClickShare}/>
+                <BoardHeader 
+                    title={board.title} 
+                    share={handleClickShare}
+                    members={board.BoardMembers}
+                />
 
                 <div className="p-4 flex gap-4 h-full">
                     {boardLists.map((list, idx) => (
@@ -90,7 +158,7 @@ const BoardView = () => {
                         <div 
                             className="w-72 h-fit p-2.5 bg-[#1F2432] rounded-xl shadow-md text-[#E2E8F0] flex flex-col 
                                         gap-1.5"
-                            key={idx} 
+                            key={list.id} 
                         >
                             {/* LIST HEADER */}
                             <div className="flex justify-between w-full">
@@ -121,9 +189,31 @@ const BoardView = () => {
                                     </div>
                                 </div>
 
-                                <button className="h-8 w-8 p-2 flex items-center justify-center">
-                                    <CollapseIcon style={{ transform: 'rotate(90deg)' }} />
-                                </button>
+                                <div className="relative">
+                                    <button 
+                                        className="h-8 w-8 p-2 flex items-center justify-center 
+                                                hover:bg-gray-600 rounded-lg"
+                                        style={{
+                                            backgroundColor: openMenuIndex === idx ? "#CBD5E1" : "",
+                                            color: openMenuIndex === idx ? "#1F2937" : "#E2E8F0", 
+                                        }}  
+                                        onClick={() => setOpenMenuIndex(openMenuIndex === idx ? null : idx)}
+                                    >
+                                        <MenuIcon />
+                                    </button>
+
+                                    {openMenuIndex === idx && (
+                                        <div className="absolute right-0 mt-2 w-48 bg-[#11151e] shadow-lg rounded-lg z-10 py-2 text-sm">
+                                            <button 
+                                                className="block w-full text-left text-[#F56565] hover:bg-[#1e2433] 
+                                                            px-4 py-2 rounded"
+                                                onClick={() => handleDeleteList(list.id)}    
+                                            >
+                                                Delete List
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             {/* LIST BODY */}
@@ -131,9 +221,16 @@ const BoardView = () => {
 
                                 {/* TASK CARDS */}
                                 {list.tasks?.map((task, tIdx) => (
-                                    <div key={tIdx} className="text-sm text-[#B6C2CF] bg-[#2B3244] p-2 rounded-md mb-1 border border-[#323B4C]">
+                                    <button 
+                                        key={tIdx}
+                                        onClick={() => {
+                                            setActiveCard(task); 
+                                            setShowCardDetail(true)}
+                                        } 
+                                        className="text-sm text-[#B6C2CF] bg-[#2B3244] p-2 rounded-md mb-1 border 
+                                                border-[#323B4C] hover:outline cursor-pointer flex">
                                         {task.title}
-                                    </div>
+                                    </button>
                                 ))}
 
                                 {/* START TO ADD NEW CARD BUTTON  */}
@@ -228,6 +325,14 @@ const BoardView = () => {
                 boardMembers={board.BoardMembers}
                 active={modalActive}
                 onClose={() => setModalActive(false)}
+            />
+
+            <CardDetailModal
+                active={showCardDetail}
+                onClose={() => setShowCardDetail(false)}
+                onSave={(update) => handleUpdateCard(update)}
+                card={activeCard}
+                members={board.BoardMembers}
             />
         </div>
     )

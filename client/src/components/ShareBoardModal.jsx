@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react"
 import Avatar from "./Avatar"
 import { inviteUser } from "../services/api"
-import Avatar3 from "../assets/avatars/avatar3.png"
 
 const ShareBoardModal = ({ boardMembers, active, onClose, onCreate }) => {
 
-    const [members, setMembers] = useState([]);
+    const [ members, setMembers ] = useState([]);
     const [ toSearch, setToSearch ] = useState('')
 
     useEffect(() => {
@@ -64,7 +63,9 @@ const ShareBoardModal = ({ boardMembers, active, onClose, onCreate }) => {
                     <div className="mt-4 flex flex-col gap-3">
                         {members?.map((member, idx) => (
                             <div className="flex items-center gap-4">
-                                <Avatar src={Avatar3}/>
+                                <Avatar 
+                                    src={member?.User?.UserProfile?.secure_url}
+                                />
                                 <div className="flex flex-col gap-1 text-slate-400">
                                     <p className="text-sm">{member.User.name}</p>
                                     <span className="text-xs">{member.User.email}</span>

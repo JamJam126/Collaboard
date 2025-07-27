@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef } from "react"
 import AddUserIcon from "./icons/AddUserIcon"
 import Logo from "../components/Logo"
+import Avatar from "./Avatar";
+import DefaultAvatar from "../assets/avatars/avatar4.jpg"
 
-const BoardHeader = ({ share, title }) => {
+const BoardHeader = ({ share, title, members }) => {
 
     const [ value, setValue ] = useState(title)
     const [ boardTitle, setBoardTitle ] = useState('')
     const [ isEditing, setIsEditing ] = useState(false)
     const [ inputWidth, setInputWidth ] = useState(0)
+    const [ boardMembers, setBoardMembers ] = useState([])
     const spanRef = useRef(null)
 
     useEffect(() => {
@@ -15,6 +18,7 @@ const BoardHeader = ({ share, title }) => {
             const newWidth = spanRef.current.offsetWidth + (isEditing ? 24 : 4);
             setInputWidth(newWidth);
         }
+        setBoardMembers(members)
     }, [boardTitle, isEditing]);
 
     useEffect(() => {
@@ -69,7 +73,15 @@ const BoardHeader = ({ share, title }) => {
                 </div>
 
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-4">
+                <div className="flex gap-1">
+                    {boardMembers?.map((member) => (
+                        <Avatar 
+                            src={member?.User?.UserProfile?.secure_url}
+                            alt={member.User.name}
+                        />
+                    ))}
+                </div>
                 <button
                     onClick={handleClickShare}
                     className="h-8 px-3 py-1.5 text-sm font-medium bg-brand-yellow hover:bg-brand-yellow-hover 

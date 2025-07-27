@@ -1,9 +1,18 @@
+import { where } from "sequelize"
 import { Board, BoardMember, User, UserProfile } from "../models/index.js"
 import validator from "validator"
 
 const getBoard = async (req, res) => {
     const { id } = req.user
-    const result = await Board.findAll({ where: { user_id: id } });
+    const result = await BoardMember.findAll(
+        {
+            where: { user_id: id }, include: [{
+                model: Board,
+                attributes: ["title"]
+            }]
+        }
+
+    );
     res.json(result);
 }
 
@@ -63,8 +72,8 @@ const inviteUser = async (req, res) => {
                     role: role
                 })
                 res.json(newBoardMember);
-            }else{
-                res.status(400).json({message:"user not found"})
+            } else {
+                res.status(400).json({ message: "user not found" })
             }
         } else {
             const foundUser = await User.findOne({ where: { name: invitedUser } })
@@ -75,8 +84,8 @@ const inviteUser = async (req, res) => {
                     role: role
                 })
                 res.json(newBoardMember);
-            }else{
-                res.status(400).json({message:"user not found"})
+            } else {
+                res.status(400).json({ message: "user not found" })
             }
         }
     } catch (error) {

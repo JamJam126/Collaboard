@@ -1,4 +1,4 @@
-import { User } from "../models/index.js";
+import { User,Board ,List} from "../models/index.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import validator from "validator"
@@ -26,6 +26,24 @@ export const registerUser=async(req,res)=>{
             name,
             email,
             hashedPassword
+        })
+
+        const personalBoard = await Board.create({
+            title:"Personal",
+            visibility:"personal",
+            user_id :newUser.id
+        })
+
+        await List.create({
+            title:"Important",
+            position:1,
+            board_id:personalBoard.id
+        })
+
+        await List.create({
+            title:"Plan",
+            position:2,
+            board_id:personalBoard.id
         })
         
         const token=jwt.sign({id:newUser.id,email,name},process.env.JWT_SECRET,{expiresIn:'7d'})

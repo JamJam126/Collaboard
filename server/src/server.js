@@ -9,6 +9,8 @@ import listRouter from './routes/list.routes.js';
 import cardRouter from './routes/card.routes.js';
 import ProfileRoute from './routes/profile.route.js';
 import authRouter from './routes/auth.route.js';
+import http from "http"
+import {Server} from "socket.io"
 
 // require("dotenv").config();
 
@@ -28,5 +30,34 @@ app.use("/api/card",cardRouter)
 app.use("/api/list",listRouter)
 app.use("/api/user",userRouter)
 
+const server = http.createServer(app);
+
+const io = new Server(server,{
+    cors: {
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    },
+});
+
+
+io.on('connection',(socket)=>{
+    console.log("socket Conneted",socket.id);
+
+    socket.on('joinBoard',(boardId)=>{
+        socket.join(`board-${boardId}`)
+    })
+    socket.on('boardChanged',({boardId})=>{
+        socket.to(`board-${boardId}`).emit('refreshBoard');
+        console.log('board change')
+    })
+    socket.on('disconnect',()=>{
+        console.log('Socket Disconnect');
+    })
+})
+
+
+
+
+
 const PORT = process.env.PORT ;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -10,7 +10,8 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
     const [assignedUser, setAssignedUser] = useState('');
     const [boardMembers, setBoardMembers] = useState([]);
     const [assignedMemberIds, setAssignedMemberIds] = useState([]);
-    const [schedule, setSchedule] = useState('');
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
     const [status, setStatus] = useState('To Do');
 
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -18,13 +19,21 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
     const [showDropdown, setShowDropdown] = useState(false);
     const spanRef = useRef(null);
 
+    const formatDateTimeLocal = (isoString) => {
+        if (!isoString) return '';
+        const date = new Date(isoString);
+        return date.toISOString().slice(0, 16);
+    };
+
     useEffect(() => {
+        console.log(card)
         if (active && card) {
             setBoardMembers(members);
             setTitle(card.title || '');
             setDescription(card.description || '');
             setAssignedUser(card.assignedUser || '');
-            setSchedule(card.schedule || '');
+            setStartTime(formatDateTimeLocal(card.start_at));
+            setEndTime(formatDateTimeLocal(card.due_at));
             setStatus(card.status || 'To Do');
             setAssignedMemberIds(card.CardAssignments.map(a => a.user_id));
         }
@@ -49,11 +58,10 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
 
     const handleRemove = async (userId) => {
         try {
-            await removeCardAssignment(card.id, userId)
+            await removeCardAssignment(card.id, userId);
             setAssignedMemberIds(prev => prev.filter(id => id !== userId));
         } catch (error) {
-            console.error(error);
-            
+            console.error("Error removing assignment:", error);
         }
     };
 
@@ -63,17 +71,17 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
             title,
             description,
             assignedUser,
-            schedule,
-            status
+            start_at: startTime,
+            due_at: endTime,
+            status,
         };
 
         await onSave(updatedCard);
         onClose();
     };
 
-    const getMemberProfile = (userId) => {
-        return boardMembers.find(m => m.User?.id === userId);
-    };
+    const getMemberProfile = (userId) =>
+        boardMembers.find(m => m.User?.id === userId);
 
     const unassignedMembers = boardMembers.filter(m => !assignedMemberIds.includes(m.User?.id));
 
@@ -81,6 +89,7 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
 
     return (
         <Modal active={active}>
+            {/* Editable Title */}
             <div
                 className={`font-bold text-2xl px-2 py-1 rounded-md relative w-fit
                             hover:${isEditingTitle ? '' : 'bg-slate-700'} flex items-center`}
@@ -107,13 +116,19 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
                 />
             </div>
 
-            <div className="ml-4 space-y-2">
+            {/* Assigned Members Section */}
+            <div className="ml-4 space-y-2 mt-4">
                 <h1 className="text-gray-400">Assigned Members</h1>
                 <div className="flex items-center gap-2 relative">
                     {assignedMemberIds.map(userId => {
                         const member = getMemberProfile(userId);
                         return (
-                            <div key={userId} onClick={() => handleRemove(userId)} className="cursor-pointer">
+                            <div
+                                key={userId}
+                                onClick={() => handleRemove(userId)}
+                                className="cursor-pointer"
+                                title="Click to remove"
+                            >
                                 <Avatar
                                     src={member?.User?.UserProfile?.secure_url || Avatar3}
                                     size={40}
@@ -150,6 +165,7 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
                 </div>
             </div>
 
+            {/* Description */}
             <div className="flex flex-col gap-2 mt-4">
                 <label>Description</label>
                 <textarea
@@ -160,18 +176,31 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
                 />
             </div>
 
-            <div className="flex flex-col gap-2 mt-3">
+            <div className="flex flex-col gap-2 mt-4">
                 <label>Schedule</label>
-                <input
-                    type="datetime-local"
-                    className="bg-gray-800 p-2 rounded text-white border border-gray-700"
-                    value={schedule}
-                    onChange={(e) => setSchedule(e.target.value)}
-                />
+                <div className="flex gap-4">
+                    <div className="flex flex-col gap-1">
+                        <span className="text-sm text-gray-400">Start</span>
+                        <input
+                            type="datetime-local"
+                            className="bg-gray-800 p-2 rounded text-white border border-gray-700"
+                            value={startTime}
+                            onChange={(e) => setStartTime(e.target.value)}
+                        />                    
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-sm text-gray-400">End</span>
+                        <input
+                            type="datetime-local"
+                            className="bg-gray-800 p-2 rounded text-white border border-gray-700"
+                            value={endTime}
+                            onChange={(e) => setEndTime(e.target.value)}
+                        />
+                    </div>
+                </div>
             </div>
 
-            {/* Status */}
-            <div className="flex flex-col gap-2 mt-3">
+            <div className="flex flex-col gap-2 mt-4">
                 <label>Status</label>
                 <select
                     className="bg-gray-800 p-2 rounded text-white border border-gray-700"
@@ -184,7 +213,6 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
                 </select>
             </div>
 
-            {/* Footer Buttons */}
             <div className="flex justify-between mt-6">
                 <button
                     onClick={onClose}

@@ -84,7 +84,7 @@ const BoardsPage = () => {
 			console.log(data)
 			
 			const enrichedBoards = data.map(board => ({
-				id: board.id,
+				id: board.board_id,
 				title: board.Board.title,
 				isStarred: false,
 				progress: 70,

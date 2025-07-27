@@ -38,7 +38,6 @@ const BoardView = () => {
             try {
                 const boardData = await getBoardById(id);
                 setBoard(boardData);
-                console.log(boardData)
 
                 const lists = await getListsByBoardId(id);
 
@@ -322,6 +321,7 @@ const BoardView = () => {
                 </div>
             </div>
             <ShareBoardModal 
+                id={id}
                 boardMembers={board.BoardMembers}
                 active={modalActive}
                 onClose={() => setModalActive(false)}

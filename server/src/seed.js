@@ -27,6 +27,7 @@ const seed = async () => {
         title: faker.word.words(3),
         description: faker.lorem.sentence(),
         visibility: "personal",
+        favorite:"true",
         user_id: users[i].id,
       });
       boards.push(board);

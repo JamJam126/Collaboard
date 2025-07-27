@@ -145,6 +145,7 @@ const BoardView = () => {
         <div className="bg-background-primary">
             <div className="h-screen flex flex-col">
                 <BoardHeader 
+                    id={id}
                     title={board.title} 
                     share={handleClickShare}
                     members={board.BoardMembers}

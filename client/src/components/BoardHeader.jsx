@@ -3,14 +3,16 @@ import AddUserIcon from "./icons/AddUserIcon"
 import Logo from "../components/Logo"
 import Avatar from "./Avatar";
 import DefaultAvatar from "../assets/avatars/avatar4.jpg"
+import { updateBoard, deleteBoard } from "../services/api";
 
-const BoardHeader = ({ share, title, members }) => {
+const BoardHeader = ({ id, share, title, members }) => {
 
-    const [ value, setValue ] = useState(title)
+    const [ boardId, setBoardId ] = useState(null)
     const [ boardTitle, setBoardTitle ] = useState('')
-    const [ isEditing, setIsEditing ] = useState(false)
-    const [ inputWidth, setInputWidth ] = useState(0)
     const [ boardMembers, setBoardMembers ] = useState([])
+    const [ isEditing, setIsEditing ] = useState(false)
+    const [openMenu, setOpenMenu] = useState(false);
+    const [ inputWidth, setInputWidth ] = useState(0)
     const spanRef = useRef(null)
 
     useEffect(() => {
@@ -19,6 +21,7 @@ const BoardHeader = ({ share, title, members }) => {
             setInputWidth(newWidth);
         }
         setBoardMembers(members)
+        setBoardId(id)
     }, [boardTitle, isEditing]);
 
     useEffect(() => {
@@ -32,10 +35,32 @@ const BoardHeader = ({ share, title, members }) => {
         setInputWidth(inputWidth + 24);
     };
 
-    const handleStopEditing = () => {
+    const handleStopEditing = async () => {
         setIsEditing(false)
         setInputWidth(inputWidth - 24)
+
+        if (boardTitle !== title) {
+            try {
+                const response = await updateBoard(boardId, { title: boardTitle });
+                console.log(response)
+            } catch (error) {
+                console.error(error);
+            }
+        }
     }
+
+    const handleDeleteBoard = async () => {
+        const confirmed = window.confirm("Are you sure you want to delete this board?");
+        if (!confirmed) return;
+
+        try {
+            await deleteBoard(boardId);
+            window.location.href = '/';
+        } catch (error) {
+            console.error("Failed to delete board:", error);
+            alert("Failed to delete the board.");
+        }
+    };
     
     const handleClickShare = () => {
         share()
@@ -90,6 +115,35 @@ const BoardHeader = ({ share, title, members }) => {
                     <AddUserIcon />
                     <span>Share</span>
                 </button>
+
+                <div className="relative">
+                    <button
+                        className="h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-600 rounded-lg"
+                        onClick={() => setOpenMenu(!openMenu)}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v.01M12 12v.01M12 18v.01" />
+                        </svg>
+                    </button>
+
+                    {openMenu && (
+                        <div className="absolute right-0 mt-2 w-40 bg-[#11151e] shadow-lg rounded-lg z-10 py-2 text-sm">
+                            <button
+                                onClick={handleDeleteBoard}
+                                className="block w-full text-left text-[#F56565] hover:bg-[#1e2433] px-4 py-2 rounded"
+                            >
+                                Delete Board
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

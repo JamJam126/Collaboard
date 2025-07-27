@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Modal from "./Modal";
 import Avatar from "./Avatar";
-import { assignCard, removeCardAssignment } from "../services/api";
+import { assignCard, removeCardAssignment, deleteCard } from "../services/api";
 import Avatar3 from "../assets/avatars/avatar3.png";
 
 const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
@@ -26,7 +26,6 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
     };
 
     useEffect(() => {
-        console.log(card)
         if (active && card) {
             setBoardMembers(members);
             setTitle(card.title || '');
@@ -78,6 +77,17 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
 
         await onSave(updatedCard);
         onClose();
+    };
+
+    const handleDelete = async () => {
+        try {
+
+            const response = await deleteCard(card.id)
+            console.log(response)
+            onClose();
+        } catch (error) {
+            console.error("Error deleting card:", error);
+        }
     };
 
     const getMemberProfile = (userId) =>
@@ -214,12 +224,20 @@ const CardDetailModal = ({ active, onClose, card, onSave, members }) => {
             </div>
 
             <div className="flex justify-between mt-6">
-                <button
-                    onClick={onClose}
-                    className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-white"
-                >
-                    Cancel
-                </button>
+                <div className="flex gap-2">
+        <button
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded text-white"
+        >
+            Cancel
+        </button>
+        <button
+            onClick={handleDelete}
+            className="px-4 py-2 bg-red-700 hover:bg-red-800 rounded text-white"
+        >
+            Delete
+        </button>
+    </div>
                 <button
                     onClick={handleSave}
                     className="px-4 py-2 font-medium bg-brand-yellow hover:bg-brand-yellow-hover text-[#11151E] rounded"

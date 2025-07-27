@@ -29,6 +29,16 @@ export const createBoards = async (title, description, visibility) => {
     return response.data
 }
 
+export const updateBoard = async (id, updates) => {
+    const response = await axiosInstance.put(`/board/${id}`, updates);
+    return response.data;
+};
+
+export const deleteBoard = async (id) => {
+    const response = await axiosInstance.delete(`/board/${id}`);
+    return response.data;
+};
+
 export const getListsByBoardId = async (board_id) => {
     const response = await axiosInstance.get(`/board/${board_id}/list`);
     return response.data;
@@ -99,10 +109,6 @@ export const inviteUser = async (id, invitedUser, role) => {
         invitedUser,
         role
     }
-
-    console.log(id)
-    console.log(payload)
-
     const response = await axiosInstance.post(`/board/${id}/invite`, payload);
     return response.data;
 }

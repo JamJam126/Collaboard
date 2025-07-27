@@ -5,16 +5,16 @@ import { assignCard,removeAssignment } from "../controllers/assign.controller.js
 
 const cardRouter=express.Router()
 
-cardRouter.post("/",authentication,createCard)
+cardRouter.post("/", authentication, createCard)
 
-cardRouter.put("/:id",authentication,updateCard)
+cardRouter.put("/:id", authentication, updateCard)
 
-cardRouter.delete("/:id",authentication,deleteCard)
+cardRouter.delete("/:id", authentication, deleteCard)
 
 // assign card
 
-cardRouter.post('/assign/:id',authentication, assignCard)
+cardRouter.post('/assign/:id', authentication, assignCard)
 
-cardRouter.delete('/remove/:id',authentication, removeAssignment)
+cardRouter.delete('/remove/:id', authentication, removeAssignment)
 
 export default cardRouter

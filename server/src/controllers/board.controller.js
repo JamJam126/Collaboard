@@ -56,7 +56,7 @@ const addBoard = async (req, res) => {
         if (!title || !visibility || !user_id) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
-        const result = await Board.create({ title, description, visibility,favorite, user_id })
+        const result = await Board.create({ title, description, visibility, favorite, user_id })
         const boardMember = await BoardMember.create({
             user_id: user_id,
             board_id: result.id,

@@ -173,7 +173,9 @@ const BoardView = () => {
             const response = await deleteCard(id)
             console.log(response)
             setShowCardDetail(false)
-            fetchBoardData()
+            socket.emit('boardChanged',{boardId:id});
+
+            // fetchPersonalBoard()
         } catch (error) {
             console.error("Error deleting card:", error);
         }
@@ -193,6 +195,7 @@ const BoardView = () => {
                     share={handleClickShare}
                     members={board.BoardMembers}
                     favorite={board.favorite}
+                    socket = {socket}
                 />
 
                 <div className="p-4 flex gap-4 h-full">

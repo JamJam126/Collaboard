@@ -118,7 +118,9 @@ const BoardView = () => {
             if (!isConfirmed) return;
 
             const response = await deleteList(Id)
+            setBoardLists(prev => prev.filter(list => list.id !== Id));
             socket.emit('boardChanged',{boardId:id});
+            setOpenMenuIndex(null)
             console.log(response)
         } catch (error) {
             console.error(error)

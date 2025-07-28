@@ -1,13 +1,13 @@
 import { useState } from "react";
 import Modal from "./Modal";
 
-const ChangeEmailModal = ({ active, onClose }) => {
+const ChangeEmailModal = ({ active, onClose, onSubmitChange }) => {
 
     const [newEmail, setNewEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = () => {
-
+        onSubmitChange(password,newEmail);
     };
 
     return(
@@ -44,7 +44,7 @@ const ChangeEmailModal = ({ active, onClose }) => {
                     Close
                 </button>
                 <button 
-                    // onClick={handleCreate}
+                    onClick={handleSubmit}
                     className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
                     Create

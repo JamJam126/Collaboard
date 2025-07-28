@@ -8,7 +8,7 @@ import FilledStarIcon from "./icons/FilledStarIcon";
 import EmptyStarIcon from "./icons/EmptyStarIcon";
 import { updateBoard, deleteBoard } from "../services/api";
 
-const BoardHeader = ({ id, share, title, members, favorite }) => {
+const BoardHeader = ({ id, share, title, members, favorite,socket }) => {
     const [boardId, setBoardId] = useState(null);
     const [boardTitle, setBoardTitle] = useState("");
     const [boardMembers, setBoardMembers] = useState([]);
@@ -29,10 +29,11 @@ const BoardHeader = ({ id, share, title, members, favorite }) => {
         setBoardId(id);
         setIsFavorite(favorite);
     }, [boardTitle, isEditing, id, members, favorite]);
-
+    
     useEffect(() => {
         if (!isEditing) {
             setBoardTitle(title);
+            socket.on('resfreshBoard',setBoardTitle(title));
         }
     }, [title]);
 
@@ -49,6 +50,7 @@ const BoardHeader = ({ id, share, title, members, favorite }) => {
             try {
                 const response = await updateBoard(boardId, { title: boardTitle });
                 console.log("Board updated:", response);
+                socket.emit('boardChanged',{boardId:boardId})
             } catch (error) {
                 console.error("Failed to update board title:", error);
             }

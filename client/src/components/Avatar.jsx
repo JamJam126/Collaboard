@@ -1,4 +1,4 @@
-import DefaultAvatar from "../assets/avatars/avatar4.jpg"
+import DefaultAvatar from "../assets/avatars/avatar.jpg"
 
 const Avatar = ({ src, alt = "User", size = 32 }) => {
 

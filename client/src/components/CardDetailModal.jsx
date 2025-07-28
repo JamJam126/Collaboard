@@ -63,7 +63,7 @@ const CardDetailModal = ({ active, onClose, card, onSave, onDelete, members, per
             console.error("Error removing assignment:", error);
         }
     };
-
+ 
     const handleSave = async () => {
         const updatedCard = {
             ...card,

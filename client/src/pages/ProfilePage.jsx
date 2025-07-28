@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AuthenticatedLayout from '../layout/AuthenticatedLayout';
 import { changeEmail, changeName, changePassword, getUserProfile } from '../services/api';
 import Avatar from '../components/Avatar';
-import DefaultAvatar from "../assets/avatars/avatar4.jpg"
+import DefaultAvatar from "../assets/avatars/avatar.jpg"
 import ChangeUsernameModal from '../components/ChangeUsernameModal';
 import ChangeEmailModal from '../components/ChangeEmailModal';
 import ChangeAvatarModal from '../components/ChangeAvatarModal';

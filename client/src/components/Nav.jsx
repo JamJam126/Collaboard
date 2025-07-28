@@ -1,6 +1,6 @@
 import SearchBar from "./SearchBar"
 import Avatar from "./Avatar"
-import Avatar3 from "../assets/avatars/avatar3.png"
+import Avatar3 from "../assets/avatars/avatar.jpg"
 import { useNavigate } from "react-router-dom"
 import Logo from "./Logo"
 import { useEffect, useState } from "react"

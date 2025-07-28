@@ -84,23 +84,23 @@ const BoardsPage = () => {
 			const data = await getBoards()
 			console.log(data)
 			
-			const enrichedBoards = data.map(board => ({
-				id: board.board_id,
-				title: board.Board.title,
-				isStarred: false,
-				progress: 70,
-				tasks: {
-					total: 10,
-					inProgress: 12
-				},
-				users: [
-					{ name: "Luna", avatar: Nero },
-					{ name: "Carol", avatar: Avatar4 },
-				],
-				others: 2
-			}));
+			// const enrichedBoards = data.map(board => ({
+			// 	id: board.board_id,
+			// 	title: board.Board.title,
+			// 	isStarred: board.Board.favorite,
+			// 	progress: 70,
+			// 	tasks: {
+			// 		total: 10,
+			// 		inProgress: 12
+			// 	},
+			// 	users: [
+			// 		{ name: "Luna", avatar: Nero },
+			// 		{ name: "Carol", avatar: Avatar4 },
+			// 	],
+			// 	others: 2
+			// }));
 
-			setBoards(enrichedBoards);
+			setBoards(data);
 		} catch (err) {
 			console.error(err);	
 		}
@@ -200,9 +200,9 @@ const BoardsPage = () => {
                         {boards.map((data) => (
                             <BoardCard 
 								key={data.id}
-                                isStarred={data.isStarred}
+                                isStarred={data.favorite}
                                 title={data.title}
-                                users={data.users}
+                                users={data.members}
                                 progress={data.progress}
                                 tasks={data.tasks}
                                 others={data.others}

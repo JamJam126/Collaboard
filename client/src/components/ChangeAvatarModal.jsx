@@ -39,7 +39,6 @@ const ChangeAvatarModal = ({ active, onClose }) => {
                 body: formData
             })
 
-
             const data = await res.json()
             console.log("Data", data)
 

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import colors from "../style/colors"
 import FolderIcon from "./icons/FolderIcon"
 import EmptyStarIcon from "./icons/EmptyStarIcon"
@@ -9,6 +9,10 @@ const BoardCard = ({ isStarred, title, users = [], progress = 0, tasks = {}, oth
 
     const [ starred, setStarred ] = useState(isStarred)
     const cardColors = colors.card
+
+    useEffect(() => {
+        setStarred(isStarred)
+    }, []) 
 
     const handleToggleStar = () => setStarred(prev => !prev)
     
@@ -21,7 +25,7 @@ const BoardCard = ({ isStarred, title, users = [], progress = 0, tasks = {}, oth
             <header className="w-full flex justify-between h-6">
                 <FolderIcon color={cardColors.folder}/>
                 <button onClick={handleToggleStar}>
-                    {starred ? (
+                    {!starred ? (
                         <EmptyStarIcon color={cardColors.emptyStar} />
                     ) : (
                         <FilledStarIcon color={cardColors.filledStar} />
@@ -37,25 +41,25 @@ const BoardCard = ({ isStarred, title, users = [], progress = 0, tasks = {}, oth
                 {users.map((user, idx) => (
                     <Avatar
                         key={idx}
-                        src={user.avatar}
+                        src={user.profile?.secure_url}
                         alt={user.name}
                     />
                 ))}
                 <div className="flex items-center px-0.5">
-                    <span className="text-card-textSecondary">+{others}</span>
+                    {/* <span className="text-card-textSecondary">+{others}</span> */}
                 </div>
             </div>
 
             {/* TASK INFO */}
             <p className="text-card-textSecondary">
-                {tasks.total} tasks ‧ {tasks.inProgress} in progress
+                {/* {tasks.total} tasks ‧ {tasks.inProgress} in progress */}
             </p>
 
             {/* PROGRESS BAR */}
             <div className="w-full h-2 rounded-full overflow-hidden bg-card-progressBg"
             >
                 <div className="h-full rounded-full bg-card-progressFill"
-                     style={{width: progress + "%"}}>
+                     style={{width: progress + "50%"}}>
                 </div>            
             </div>
         </div>

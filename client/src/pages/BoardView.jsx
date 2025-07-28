@@ -41,8 +41,7 @@ const BoardView = () => {
     const boardId = id;
 
 
-    useEffect(() => {
-        const fetchBoardData = async () => {
+    const fetchBoardData = async () => {
             try {
                 const boardData = await getBoardById(id);
                 setBoard(boardData);
@@ -61,7 +60,9 @@ const BoardView = () => {
             } catch (error) {
                 console.error("Error fetching board data:", error);
             }
-        };
+        }
+
+    useEffect(() => {
 
         fetchBoardData();
 
@@ -171,7 +172,7 @@ const BoardView = () => {
             const response = await deleteCard(id)
             console.log(response)
             setShowCardDetail(false)
-            // fetchPersonalBoard()
+            fetchBoardData()
         } catch (error) {
             console.error("Error deleting card:", error);
         }

@@ -7,12 +7,14 @@ import PersonIcon from "./icons/PersonIcon"
 import SignoutIcon from "./icons/SignoutIcon"
 import { useState } from "react"
 import { createBoards } from "../services/api"
+import useAuth from "../hooks/useAuth"
 
 const SideBar = () => {
     const { barStatus, toggleBar } = useSidebar(); 
     const [ modalActive, setModalActive ] = useState(false) 
     const location = useLocation()
     const navigate = useNavigate()
+    const {logoutUser}=useAuth()
 
     const barItems = [
         { id: "Home", path: "/", icon: HomeIcon },
@@ -98,7 +100,7 @@ const SideBar = () => {
             </div>
 
             <div className="py-2.5 text-white opacity-75">
-                <button title="Sign Out">
+                <button title="Sign Out" onClick={()=>{logoutUser()}}>
                     <SignoutIcon /> 
                 </button>
             </div>

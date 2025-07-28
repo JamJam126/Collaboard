@@ -18,8 +18,8 @@ import ProtectedRoute from "./components/protectedRoute";
 function App() {
     return (
         <SidebarProvider>
-            <AuthProvider>
                 <BrowserRouter>
+                <AuthProvider>
                     <Routes>
                         <Route path="/" element={
                             <ProtectedRoute>
@@ -49,8 +49,8 @@ function App() {
                         <Route path="/personal" element={<PersonalPage />} />
                         <Route path="/login" element={<LoginPage/>}/>
                     </Routes>
+                    </AuthProvider>
                 </BrowserRouter>
-            </AuthProvider>
         </SidebarProvider>  
     );
 }

@@ -158,6 +158,7 @@ const BoardView = () => {
         try {
             const response = await updateCard(activeCard.id, update)
             console.log(response)
+            fetchBoardData()
         } catch (Error) {
             console.error(Error);
             
@@ -270,8 +271,14 @@ const BoardView = () => {
                                             setActiveCard(task); 
                                             setShowCardDetail(true)}
                                         } 
-                                        className="text-sm text-[#B6C2CF] bg-[#2B3244] p-2 rounded-md mb-1 border 
-                                                border-[#323B4C] hover:outline cursor-pointer flex">
+                                        className="text-sm text-[#a8b6c8] bg-[#161a23] p-2 rounded-md mb-1 border 
+                                                border-[#323B4C] hover:outline cursor-pointer flex items-center gap-2">
+                                        {(task.status === "done") ? (
+                                        <div>
+                                            <div className="h-4 w-4 bg-green-600 rounded-full">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l5 5L20 7"/></svg>
+                                            </div>
+                                        </div> ) : (<div></div>)} 
                                         {task.title}
                                     </button>
                                 ))}

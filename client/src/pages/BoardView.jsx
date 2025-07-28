@@ -8,7 +8,8 @@ import {
     updateList,
     deleteList,
     createCard,
-    updateCard
+    updateCard,
+    deleteCard
 } from "../services/api"
 import BoardHeader from "../components/BoardHeader"
 import MenuIcon from "../components/icons/MenuIcon"
@@ -161,8 +162,18 @@ const BoardView = () => {
 
         setActiveCard(null)
         socket.emit('boardChanged',{boardId:id});
-
     }
+
+    const handleDelete = async (id) => {
+        try {
+            const response = await deleteCard(id)
+            console.log(response)
+            setShowCardDetail(false)
+            // fetchPersonalBoard()
+        } catch (error) {
+            console.error("Error deleting card:", error);
+        }
+    };
 
     const handleClickShare = () => {
         setModalActive(true)
@@ -177,6 +188,7 @@ const BoardView = () => {
                     title={board.title} 
                     share={handleClickShare}
                     members={board.BoardMembers}
+                    favorite={board.favorite}
                 />
 
                 <div className="p-4 flex gap-4 h-full">
@@ -360,6 +372,7 @@ const BoardView = () => {
                 active={showCardDetail}
                 onClose={() => setShowCardDetail(false)}
                 onSave={(update) => handleUpdateCard(update)}
+                onDelete={(id) => handleDelete(id)}
                 card={activeCard}
                 members={board.BoardMembers}
             />

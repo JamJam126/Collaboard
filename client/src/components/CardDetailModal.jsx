@@ -209,27 +209,27 @@ const CardDetailModal = ({ active, onClose, card, onSave, onDelete, members, per
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                 >
-                    <option value="To Do">To Do</option>
+                    <option value="to-do">To Do</option>
                     {/* <option value="In Progress">In Progress</option> */}
-                    <option value="Done">Done</option>
+                    <option value="done">Done</option>
                 </select>
             </div>
 
             <div className="flex justify-between mt-6">
                 <div className="flex gap-2">
-        <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded text-white"
-        >
-            Cancel
-        </button>
-        <button
-            onClick={handleDelete}
-            className="px-4 py-2 bg-red-700 hover:bg-red-800 rounded text-white"
-        >
-            Delete
-        </button>
-    </div>
+                    <button
+                        onClick={onClose}
+                        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded text-white"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleDelete}
+                        className="px-4 py-2 bg-red-700 hover:bg-red-800 rounded text-white"
+                    >
+                        Delete
+                    </button>
+                </div>
                 <button
                     onClick={handleSave}
                     className="px-4 py-2 font-medium bg-brand-yellow hover:bg-brand-yellow-hover text-[#11151E] rounded"

@@ -133,6 +133,7 @@ const PersonalPage = () => {
             console.error("Error deleting card:", error);
         }
     };
+    
     return(
         <AuthenticatedLayout>
             <div className="p-4 flex gap-4 mt-20 h-full">

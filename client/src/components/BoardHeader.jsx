@@ -1,28 +1,34 @@
-import { useState, useEffect, useRef } from "react"
-import AddUserIcon from "./icons/AddUserIcon"
-import Logo from "../components/Logo"
+import { useState, useEffect, useRef } from "react";
+import AddUserIcon from "./icons/AddUserIcon";
+import Logo from "../components/Logo";
+import colors from "../style/colors.js"
 import Avatar from "./Avatar";
-import DefaultAvatar from "../assets/avatars/avatar4.jpg"
+import DefaultAvatar from "../assets/avatars/avatar4.jpg";
+import FilledStarIcon from "./icons/FilledStarIcon";
+import EmptyStarIcon from "./icons/EmptyStarIcon";
 import { updateBoard, deleteBoard } from "../services/api";
 
-const BoardHeader = ({ id, share, title, members }) => {
-
-    const [ boardId, setBoardId ] = useState(null)
-    const [ boardTitle, setBoardTitle ] = useState('')
-    const [ boardMembers, setBoardMembers ] = useState([])
-    const [ isEditing, setIsEditing ] = useState(false)
+const BoardHeader = ({ id, share, title, members, favorite }) => {
+    const [boardId, setBoardId] = useState(null);
+    const [boardTitle, setBoardTitle] = useState("");
+    const [boardMembers, setBoardMembers] = useState([]);
+    const [isEditing, setIsEditing] = useState(false);
+    const [inputWidth, setInputWidth] = useState(0);
     const [openMenu, setOpenMenu] = useState(false);
-    const [ inputWidth, setInputWidth ] = useState(0)
-    const spanRef = useRef(null)
+    const [isFavorite, setIsFavorite] = useState(favorite);
+    const spanRef = useRef(null);
+
+    const cardColors = colors.card
 
     useEffect(() => {
         if (spanRef.current) {
             const newWidth = spanRef.current.offsetWidth + (isEditing ? 24 : 4);
             setInputWidth(newWidth);
         }
-        setBoardMembers(members)
-        setBoardId(id)
-    }, [boardTitle, isEditing]);
+        setBoardMembers(members);
+        setBoardId(id);
+        setIsFavorite(favorite);
+    }, [boardTitle, isEditing, id, members, favorite]);
 
     useEffect(() => {
         if (!isEditing) {
@@ -36,18 +42,22 @@ const BoardHeader = ({ id, share, title, members }) => {
     };
 
     const handleStopEditing = async () => {
-        setIsEditing(false)
-        setInputWidth(inputWidth - 24)
+        setIsEditing(false);
+        setInputWidth(inputWidth - 24);
 
         if (boardTitle !== title) {
             try {
                 const response = await updateBoard(boardId, { title: boardTitle });
-                console.log(response)
+                console.log("Board updated:", response);
             } catch (error) {
-                console.error(error);
+                console.error("Failed to update board title:", error);
             }
         }
-    }
+    };
+
+    const handleClickShare = () => {
+        share();
+    };
 
     const handleDeleteBoard = async () => {
         const confirmed = window.confirm("Are you sure you want to delete this board?");
@@ -55,33 +65,40 @@ const BoardHeader = ({ id, share, title, members }) => {
 
         try {
             await deleteBoard(boardId);
-            window.location.href = '/';
+            window.location.href = "/";
         } catch (error) {
             console.error("Failed to delete board:", error);
             alert("Failed to delete the board.");
         }
     };
-    
-    const handleClickShare = () => {
-        share()
-    }
+
+    const handleToggleFavorite = async () => {
+        try {
+            const newFavoriteStatus = !isFavorite;
+            setIsFavorite(newFavoriteStatus); 
+
+            await updateBoard(boardId, { favorite: newFavoriteStatus });
+        } catch (error) {
+            console.error("Failed to update favorite:", error);
+            setIsFavorite(!isFavorite); 
+            alert("Failed to update favorite status.");
+        }
+    };
 
     return (
-        <div className="h-14 p-3 bg-[#0000003d] text-white flex justify-between"
-        >
-            
+        <div className="h-14 p-3 bg-[#0000003d] text-white flex justify-between">
             <div className="flex items-center">
-                <Logo size={48}/>
-                {/* BOARD TITLE AND EDIT BAN */}
+                <Logo size={48} />
                 <div
                     className={`font-bold text-lg px-3 rounded-md relative
-                                hover:${ isEditing ? "" : "bg-slate-700"} flex items-center`}
+                                hover:${isEditing ? "" : "bg-slate-700"} flex items-center`}
                 >
                     <span
                         ref={spanRef}
                         className="absolute invisible whitespace-pre"
                         style={{ font: "inherit", padding: "0 2px" }}
-                    > {boardTitle || ""}
+                    >
+                        {boardTitle || ""}
                     </span>
 
                     <input
@@ -91,22 +108,33 @@ const BoardHeader = ({ id, share, title, members }) => {
                         onFocus={handleEditing}
                         onBlur={handleStopEditing}
                         className={`bg-transparent outline-none transition-all duration-150
-                                    ${ isEditing ? "border px-4 rounded bg-[#0b171f] text-[#afabab]"
-                                    : "cursor-pointer"} font-bold text-lg`}
+                            ${
+                                isEditing
+                                    ? "border px-4 rounded bg-[#0b171f] text-[#afabab]"
+                                    : "cursor-pointer"
+                            } font-bold text-lg`}
                         style={{ width: `${inputWidth}px` }}
                     />
                 </div>
-
             </div>
-            <div className="flex gap-4">
+
+            <div className="flex gap-4 items-center">
+                <button onClick={handleToggleFavorite} className="hover:scale-110 transition">
+                    {isFavorite ? 
+                        <FilledStarIcon color={cardColors.filledStar} /> 
+                    : <EmptyStarIcon color={cardColors.emptyStar}/>}
+                </button>
+
                 <div className="flex gap-1">
-                    {boardMembers?.map((member) => (
-                        <Avatar 
+                    {boardMembers?.map((member, index) => (
+                        <Avatar
+                            key={index}
                             src={member?.User?.UserProfile?.secure_url || DefaultAvatar}
                             alt={member.User.name}
                         />
                     ))}
                 </div>
+
                 <button
                     onClick={handleClickShare}
                     className="h-8 px-3 py-1.5 text-sm font-medium bg-brand-yellow hover:bg-brand-yellow-hover 
@@ -149,4 +177,4 @@ const BoardHeader = ({ id, share, title, members }) => {
     );
 };
 
-export default BoardHeader
+export default BoardHeader;

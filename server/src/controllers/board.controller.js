@@ -1,20 +1,86 @@
 import { where } from "sequelize"
-import { Board, BoardMember, User, UserProfile } from "../models/index.js"
+import { Board, BoardMember, User, UserProfile, Card } from "../models/index.js";
 import validator from "validator"
 
+// const getBoard = async (req, res) => {
+//     const { id } = req.user
+//     const result = await BoardMember.findAll(
+//         {
+//             where: { user_id: id }, include: [{
+//                 model: Board,
+//                 attributes: ["title", "favorite"]
+//             }],
+//         }
+
+//     );
+//     res.json(result);
+// }
+
 const getBoard = async (req, res) => {
-    const { id } = req.user
-    const result = await BoardMember.findAll(
-        {
-            where: { user_id: id }, include: [{
-                model: Board,
-                attributes: ["title"]
-            }]
+    const { id: userId } = req.user;
+
+    try {
+        const userBoards = await BoardMember.findAll({
+            where: { user_id: userId },
+            attributes: ["board_id"]
+        });
+
+        const boardIds = userBoards.map(bm => bm.board_id);
+
+        if (boardIds.length === 0) {
+            return res.json([]);
         }
 
-    );
-    res.json(result);
-}
+        const boardMembers = await BoardMember.findAll({
+            where: { board_id: boardIds },
+            attributes: ["board_id", "role"],
+            include: [
+                {
+                    model: User,
+                    attributes: ["id", "name", "email"],
+                    include: [{
+                        model: UserProfile,
+                        attributes: ["public_id", "secure_url"]
+                    }]
+                },
+                {
+                    model: Board,
+                    attributes: ["id", "title", "favorite"]
+                }
+            ]
+        });
+
+        const boardsMap = {};
+
+        boardMembers.forEach(({ board_id, role, User, Board }) => {
+            if (!boardsMap[board_id]) {
+                boardsMap[board_id] = {
+                    id: Board.id,
+                    title: Board.title,
+                    favorite: Board.favorite,
+                    members: []
+                };
+            }
+
+            boardsMap[board_id].members.push({
+                id: User.id,
+                name: User.name,
+                email: User.email,
+                role: role,
+                profile: User.UserProfile
+            });
+        });
+
+        const groupedBoards = Object.values(boardsMap);
+
+        res.json(groupedBoards);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ errorMessage: error.message });
+    }
+};
+
 
 const getBoardById = async (req, res) => {
     const id = parseInt(req.params.id);
@@ -132,7 +198,6 @@ const deleteBoard = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 }
-
 
 export {
     getBoard,

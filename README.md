@@ -58,13 +58,13 @@ cd client
 npm start
 ```
 
-## 📦 API Routes
+<!-- ## 📦 API Routes
 
 | Method | Route         | Description           |
 | ------ | ------------- | --------------------- |
 | GET    | `/api/a` | a |
 | GET    | `/api/b` | b    |
-| POST   | `/api/c`  | c            |
+| POST   | `/api/c`  | c            | -->
 
 ##
 *This project is built for educational purposes only.*

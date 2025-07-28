@@ -3,7 +3,7 @@ import AddUserIcon from "./icons/AddUserIcon";
 import Logo from "../components/Logo";
 import colors from "../style/colors.js"
 import Avatar from "./Avatar";
-import DefaultAvatar from "../assets/avatars/avatar4.jpg";
+import DefaultAvatar from "../assets/avatars/avatar.jpg";
 import FilledStarIcon from "./icons/FilledStarIcon";
 import EmptyStarIcon from "./icons/EmptyStarIcon";
 import { updateBoard, deleteBoard } from "../services/api";

@@ -23,6 +23,9 @@ sequelize.sync()
 app.get("/api/health", (req, res) => {
     res.json({ message: "API is working!" });
 });
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 app.use("/api/board",boardRouter);
 app.use("/api/auth",authRouter)
 app.use('/api/profile',ProfileRoute);
